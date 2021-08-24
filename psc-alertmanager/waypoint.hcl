@@ -14,11 +14,20 @@ runner {
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-alertmanager" {
 
+  build {
+    use "docker-pull" {
+      image = var.image
+      tag   = var.tag
+    }
+  }
+
   # Deploy to Nomad
   deploy {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-alertmanager.nomad.tpl", {
         public_hostname = var.public_hostname
+        image = var.image
+        tag = var.tag
       })
     }
   }
@@ -27,4 +36,14 @@ app "prosanteconnect/psc-ecosystem-components/psc-alertmanager" {
 variable "public_hostname" {
   type    = string
   default = "forge.psc.henix.asipsante.fr"
+}
+
+variable "image" {
+  type    = string
+  default = "prom/alertmanager"
+}
+
+variable "tag" {
+  type    = string
+  default = "latest"
 }

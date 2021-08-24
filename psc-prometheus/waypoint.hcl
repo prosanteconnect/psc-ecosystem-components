@@ -11,20 +11,40 @@ runner {
   }
 }
 
+variable "public_hostname" {
+  type    = string
+  default = "forge.psc.henix.asipsante.fr"
+}
+
+variable "image" {
+  type    = string
+  default = "prom/prometheus"
+}
+
+variable "tag" {
+  type    = string
+  default = "latest"
+}
+
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
+
+  build {
+    use "docker-pull" {
+      image = var.image
+      tag   = var.tag
+    }
+  }
 
   # Deploy to Nomad
   deploy {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-prometheus.nomad.tpl", {
         public_hostname = var.public_hostname
+        image = var.image
+        tag   = var.tag
       })
     }
   }
 }
 
-variable "public_hostname" {
-  type    = string
-  default = "forge.psc.henix.asipsante.fr"
-}

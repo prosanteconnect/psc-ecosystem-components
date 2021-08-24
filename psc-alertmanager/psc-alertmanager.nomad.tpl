@@ -52,7 +52,7 @@ job "psc-alertmanager" {
               <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                  <a href="https://forge.test.psc.henix.asipsante.fr/prometheus/graph?g0.expr=ps_metric%7Bgroup%3D~%22total%7C0%7C3%7C5%7C8%22%2Coperation%3D~%22create%7Cupdate%7Cdelete%22%7D&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1w"
+                  <a href="https://${public_hostname}/prometheus/graph?g0.expr=ps_metric%7Bgroup%3D~%22total%7C0%7C3%7C5%7C8%22%2Coperation%3D~%22create%7Cupdate%7Cdelete%22%7D&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1w"
                     style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
                     color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer;
                     display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda;
@@ -138,7 +138,7 @@ EOH
       }
       driver = "docker"
       config {
-        image = "prom/alertmanager:latest"
+        image = "${image}:${tag}"
         volumes = [
           "local/alertmanager.yml:/etc/alertmanager/alertmanager.yml",
           "local/email.tmpl:/etc/alertmanager/template/email.tmpl",
