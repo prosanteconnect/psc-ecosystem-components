@@ -33,8 +33,8 @@ job "psc-mongo-express" {
     task "psc-mongo-express" {
       driver = "docker"
       env = {
-        ME_CONFIG_MONGODB_ADMINUSERNAME = '{{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_user }}{{ end }}'
-        ME_CONFIG_MONGODB_ADMINPASSWORD = '{{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_pass }}{{ end }}'
+        ME_CONFIG_MONGODB_ADMINUSERNAME = "{{ with secret \"psc-ecosystem/mongodb\" }}{{ .Data.data.root_user }}{{ end }}"
+        ME_CONFIG_MONGODB_ADMINPASSWORD = "{{ with secret \"psc-ecosystem/mongodb\" }}{{ .Data.data.root_pass }}{{ end }}"
         ME_CONFIG_SITE_BASEURL = "/psc-db/"
       }
       template {
