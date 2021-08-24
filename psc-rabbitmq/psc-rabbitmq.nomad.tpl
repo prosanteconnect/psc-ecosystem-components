@@ -23,24 +23,23 @@ job "psc-rabbitmq" {
       interval = "1h"
       mode = "fail"
     }
+
     update {
       max_parallel      = 1
-      canary            = 1
       min_healthy_time  = "30s"
       progress_deadline = "5m"
       healthy_deadline  = "2m"
-      auto_revert       = true
-      auto_promote      = true
     }
 
     network {
       port "endpoint" { to = 5672 }
       port "management" { to = 15672 }
     }
-    task "rabbitmq" {
+
+    task "psc-rabbitmq" {
       driver = "docker"
       env = {
-        RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = "-rabbitmq_management path_prefix \"/psc-rabbitmq\""
+        RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = "-rabbitmq_management path_prefix \"/rabbitmq\""
       }
       config {
         image = "rabbitmq:3.8.6-management-alpine"
@@ -75,7 +74,7 @@ EOH
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D-management"
         port = "management"
-        tags = ["urlprefix-${public_hostname}/psc-rabbitmq/"]
+        tags = ["urlprefix-${public_hostname}/rabbitmq/"]
         check {
           name         = "alive"
           type         = "http"
