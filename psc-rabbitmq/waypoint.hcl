@@ -35,3 +35,13 @@ variable "public_hostname" {
   type    = string
   default = "forge.psc.henix.asipsante.fr"
 }
+
+variable "image" {
+  type    = string
+  default = "rabbitmq"
+}
+
+variable "tag" {
+  type    = string
+  default = "3.8.6-management-alpine"
+}
