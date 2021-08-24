@@ -3,7 +3,7 @@ job "psc-rabbitmq" {
   type = "service"
 
   vault {
-    policies = ["rabbitmq"]
+    policies = ["psc-ecosystem"]
     change_mode = "restart"
   }
 
@@ -45,13 +45,13 @@ job "psc-rabbitmq" {
       config {
         image = "rabbitmq:3.8.6-management-alpine"
         ports = ["endpoint","management"]
-        volumes = ["name=rabbitmq,io_priority=high,size=5,repl=2:/var/lib/rabbitmq"]
+        volumes = ["name=rabbitmq,io_priority=high,size=5,repl=3:/var/lib/rabbitmq"]
         volume_driver = "pxd"
       }
       template {
         data = <<EOH
-RABBITMQ_DEFAULT_USER="{{ with secret "components/rabbitmq/authentication" }}{{ .Data.data.user }}{{ end }}"
-RABBITMQ_DEFAULT_PASS="{{ with secret "components/rabbitmq/authentication" }}{{ .Data.data.password }}{{ end }}"
+RABBITMQ_DEFAULT_USER="{{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.user }}{{ end }}"
+RABBITMQ_DEFAULT_PASS="{{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.password }}{{ end }}"
 EOH
         destination = "secrets/file.env"
         env = true
