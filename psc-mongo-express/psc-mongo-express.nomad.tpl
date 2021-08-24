@@ -2,6 +2,11 @@ job "psc-mongo-express" {
   datacenters = ["dc1"]
   type = "service"
 
+  vault {
+    policies = ["psc-ecosystem"]
+    change_mode = "restart"
+  }
+
   group "psc-mongo-express" {
     count = 1
 
@@ -42,7 +47,7 @@ EOH
         env = true
       }
       config {
-        image = "mongo-express"
+        image = "${image}:${tag}"
         ports = ["ui"]
       }
       resources {

@@ -31,8 +31,8 @@ app "prosanteconnect/psc-ecosystem-components/psc-rabbitmq" {
 
   build {
     use "docker-pull" {
-      image = "rabbitmq"
-      tag   = "3.8.6-management-alpine"
+      image = var.image
+      tag   = var.tag
     }
   }
 
