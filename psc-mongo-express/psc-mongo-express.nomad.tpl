@@ -42,7 +42,7 @@ EOH
         env = true
       }
       config {
-        image = "${image}:${tag}"
+        image = "${image}"
         ports = ["ui"]
       }
       resources {
