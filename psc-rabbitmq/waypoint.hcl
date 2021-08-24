@@ -16,12 +16,12 @@ variable "public_hostname" {
   default = "forge.psc.henix.asipsante.fr"
 }
 
-variable "rabbitmq_image" {
+variable "image" {
   type    = string
   default = "rabbitmq"
 }
 
-variable "rabbitmq_tag" {
+variable "tag" {
   type    = string
   default = "3.8.6-management-alpine"
 }
@@ -41,6 +41,8 @@ app "prosanteconnect/psc-ecosystem-components/psc-rabbitmq" {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-rabbitmq.nomad.tpl", {
         public_hostname = var.public_hostname
+        image = var.image
+        tag = var.tag
       })
     }
   }
