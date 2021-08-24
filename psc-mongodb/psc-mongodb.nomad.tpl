@@ -32,8 +32,8 @@ job "psc-mongodb" {
       driver = "docker"
       template {
         data = <<EOH
-          MONGO_INITDB_ROOT_USERNAME={{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_user }}{{ end }}
-          MONGO_INITDB_ROOT_PASSWORD={{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
+          MONGO_INITDB_ROOT_USERNAME = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_user }}{{ end }}
+          MONGO_INITDB_ROOT_PASSWORD = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
         EOH
         destination = "secrets/.env"
         change_mode = "restart"
