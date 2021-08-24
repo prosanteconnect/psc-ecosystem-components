@@ -40,7 +40,7 @@ job "psc-mongodb" {
         env = true
       }
       config {
-        image = "mongo"
+        image = "${image}:${tag}"
         ports = ["db"]
         volumes = ["name=psc-mongodb,fs=xfs,io_priority=high,size=8,repl=3:/data/db",
           "name=psc-mongodb-config, fs=xfs, io_priority=high, size=1, repl=3:/data/configdb"]
