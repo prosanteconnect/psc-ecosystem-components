@@ -14,6 +14,13 @@ runner {
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-rabbitmq" {
 
+  build {
+    use "docker-pull" {
+      image = "rabbitmq"
+      tag   = "3.8.6-management-alpine"
+    }
+  }
+
   # Deploy to Nomad
   deploy {
     use "nomad-jobspec" {
