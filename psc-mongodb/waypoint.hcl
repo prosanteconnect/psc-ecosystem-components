@@ -24,7 +24,11 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
   # Deploy to Nomad
   deploy {
     use "nomad-jobspec" {
-      jobspec = templatefile("${path.app}/psc-mongodb.nomad.tpl")
+      jobspec = templatefile("${path.app}/psc-mongodb.nomad.tpl", {
+        image = var.image
+        tag = var.tag
+      })
+
     }
   }
 }
