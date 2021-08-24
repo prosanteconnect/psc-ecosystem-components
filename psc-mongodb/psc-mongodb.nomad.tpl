@@ -19,12 +19,9 @@ job "psc-mongodb" {
 
     update {
       max_parallel      = 1
-      canary            = 1
       min_healthy_time  = "30s"
       progress_deadline = "5m"
       healthy_deadline  = "2m"
-      auto_revert       = true
-      auto_promote      = true
     }
 
     network {
@@ -45,12 +42,13 @@ job "psc-mongodb" {
       config {
         image = "mongo"
         ports = ["db"]
-        volumes = ["name=psc-mongodb,fs=xfs,io_priority=high,size=8,repl=2:/data/db"]
+        volumes = ["name=psc-mongodb,fs=xfs,io_priority=high,size=8,repl=3:/data/db",
+          "name=psc-mongodb-config, fs=xfs, io_priority=high, size=1, repl=3:/data/configdb"]
         volume_driver = "pxd"
       }
       resources {
-        cpu    = 1000
-        memory = 2048
+        cpu    = 2000
+        memory = 6044
       }
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
