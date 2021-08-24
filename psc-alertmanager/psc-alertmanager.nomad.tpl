@@ -2,6 +2,11 @@ job "psc-alertmanager" {
   datacenters = ["dc1"]
   type = "service"
 
+  vault {
+    policies = ["psc-ecosystem"]
+    change_mode = "restart"
+  }
+
   group "alerting" {
     count = 1
     restart {
@@ -127,11 +132,11 @@ receivers:
     smarthost: smtp.gmail.com:587
     auth_username: prosanteconnect.ans@gmail.com
     auth_identity: prosanteconnect.ans@gmail.com
-    auth_password: iuhikcrcelpkhoqw
+    auth_password: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.auth_password }}{{ end }}
     send_resolved: true
     html : {{ `'{{ template "email.custom.html" . }}'` }}
   webhook_configs:
-  - url: 'http://{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}/pscload/v1/process/continue'
+  - url: http://{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}/pscload/v1/process/continue
 
 
 EOH
