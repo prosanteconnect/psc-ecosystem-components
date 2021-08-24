@@ -11,6 +11,21 @@ runner {
   }
 }
 
+variable "public_hostname" {
+  type    = string
+  default = "forge.psc.henix.asipsante.fr"
+}
+
+variable "image" {
+  type    = string
+  default = "rabbitmq"
+}
+
+variable "tag" {
+  type    = string
+  default = "3.8.6-management-alpine"
+}
+
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-rabbitmq" {
 
@@ -29,19 +44,4 @@ app "prosanteconnect/psc-ecosystem-components/psc-rabbitmq" {
       })
     }
   }
-}
-
-variable "public_hostname" {
-  type    = string
-  default = "forge.psc.henix.asipsante.fr"
-}
-
-variable "image" {
-  type    = string
-  default = "rabbitmq"
-}
-
-variable "tag" {
-  type    = string
-  default = "3.8.6-management-alpine"
 }
