@@ -16,12 +16,12 @@ variable "public_hostname" {
   default = "forge.psc.henix.asipsante.fr"
 }
 
-variable "image" {
+variable "rabbitmq_image" {
   type    = string
   default = "rabbitmq"
 }
 
-variable "tag" {
+variable "rabbitmq_tag" {
   type    = string
   default = "3.8.6-management-alpine"
 }

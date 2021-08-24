@@ -42,7 +42,7 @@ job "psc-rabbitmq" {
         RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = "-rabbitmq_management path_prefix \"/rabbitmq\""
       }
       config {
-        image = "${image}:${tag}"
+        image = "${rabbitmq_image}:${rabbitmq_tag}"
         ports = ["endpoint","management"]
         volumes = ["name=rabbitmq,io_priority=high,size=5,repl=3:/var/lib/rabbitmq"]
         volume_driver = "pxd"
