@@ -45,7 +45,7 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-      - '{{ range service "alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
+      - '{{ range service "psc-alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
 
 rule_files:
   - /etc/prometheus/rules.yml
