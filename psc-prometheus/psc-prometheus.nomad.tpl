@@ -1,4 +1,4 @@
-job "tcp-prometheus" {
+job "psc-prometheus" {
   datacenters = ["dc1"]
   type = "service"
 
