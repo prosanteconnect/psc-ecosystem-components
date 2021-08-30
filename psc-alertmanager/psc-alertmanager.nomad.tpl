@@ -41,7 +41,8 @@ job "psc-alertmanager" {
       }
 
       artifact {
-        source = "https://raw.githubusercontent.com/cleitus/psc-ecosystem-components/main/psc-alertmanager/email.tmpl"
+        mode = "file" // otherwise it will fail with mode 'any'
+        source = "https://raw.githubusercontent.com/prosanteconnect/psc-ecosystem-components/main/psc-alertmanager/email.tmpl"
         destination = "local/email.tmpl"
       }
 
