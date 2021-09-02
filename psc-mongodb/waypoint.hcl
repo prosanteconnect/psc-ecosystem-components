@@ -8,6 +8,7 @@ runner {
   data_source "git" {
     url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
     path = "psc-mongodb"
+    ignore_changes_outside_path = true
   }
 }
 
