@@ -30,12 +30,12 @@ variable "tag" {
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
 
-  build {
-    use "docker-pull" {
-      image = var.image
-      tag   = var.tag
-    }
-  }
+//  build {
+//    use "docker-pull" {
+//      image = var.image
+//      tag   = var.tag
+//    }
+//  }
 
   # Deploy to Nomad
   deploy {
