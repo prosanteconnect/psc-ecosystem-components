@@ -43,8 +43,8 @@ app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-prometheus.nomad.tpl", {
         public_hostname = var.public_hostname
-        image = var.image
-        tag   = var.tag
+//        image = var.image
+//        tag   = var.tag
       })
     }
   }
