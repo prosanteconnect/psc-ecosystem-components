@@ -17,25 +17,24 @@ variable "public_hostname" {
   default = "forge.psc.henix.asipsante.fr"
 }
 
-variable "image" {
-  type    = string
-  default = "prom/prometheus"
-}
+//variable "image" {
+//  type    = string
+//  default = "prom/prometheus"
+//}
 
-variable "tag" {
-  type    = string
-  default = "latest"
-}
+//variable "tag" {
+//  type    = string
+//  default = "latest"
+//}
 
-## add some comment to trigger git polling
 
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
 
   build {
     use "docker-pull" {
-      image = var.image
-      tag   = var.tag
+      image = "prom/prometheus"
+//      tag   = "latest"
     }
   }
 
