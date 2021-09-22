@@ -17,15 +17,15 @@ variable "public_hostname" {
   default = "forge.psc.henix.asipsante.fr"
 }
 
-//variable "image" {
-//  type    = string
-//  default = "prom/prometheus"
-//}
+variable "image" {
+  type    = string
+  default = "prom/prometheus"
+}
 
-//variable "tag" {
-//  type    = string
-//  default = "latest"
-//}
+variable "tag" {
+  type    = string
+  default = "latest"
+}
 
 
 # An application to deploy.
@@ -33,8 +33,8 @@ app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
 
   build {
     use "docker-pull" {
-      image = "prom/prometheus"
-//      tag   = "latest"
+      image = var.image
+      tag   = var.tag
     }
   }
 
@@ -43,8 +43,8 @@ app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-prometheus.nomad.tpl", {
         public_hostname = var.public_hostname
-//        image = var.image
-//        tag   = var.tag
+        image = var.image
+        tag   = var.tag
       })
     }
   }
