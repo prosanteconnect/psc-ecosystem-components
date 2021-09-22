@@ -25,6 +25,14 @@ job "psc-prometheus" {
     task "psc-prometheus" {
       template {
         change_mode = "restart"
+        destination = "secrets/.env"
+        env = true
+        data = <<EOH
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/prometheus" }}{{ .Data.data.public_hostname }}{{ end }}
+EOH
+      }
+      template {
+        change_mode = "restart"
         destination = "local/prometheus.yml"
 
         data = <<EOH
@@ -97,7 +105,7 @@ EOH
         ]
         args = [
           "--config.file=/etc/prometheus/prometheus.yml",
-          "--web.external-url=https://${public_hostname}/psc-prometheus/",
+          "--web.external-url=https://${PUBLIC_HOSTNAME}/psc-prometheus/",
           "--web.route-prefix=/psc-prometheus",
           "--storage.tsdb.retention.time=30d"
         ]
@@ -113,7 +121,7 @@ EOH
 
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
-        tags = ["urlprefix-${public_hostname}/psc-prometheus"]
+        tags = ["urlprefix-${PUBLIC_HOSTNAME}/psc-prometheus"]
         port = "ui"
 
         check {
