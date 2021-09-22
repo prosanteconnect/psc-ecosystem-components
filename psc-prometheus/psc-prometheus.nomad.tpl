@@ -90,7 +90,7 @@ EOH
       driver = "docker"
 
       config {
-        image = "prom/prometheus"
+        image = "prom/prometheus:latest"
         volumes = [
           "local:/etc/prometheus",
         ]
