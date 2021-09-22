@@ -34,7 +34,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
   build {
     use "docker-pull" {
       image = "prom/prometheus"
-//      tag   = "latest"
+      tag   = "latest"
     }
   }
 
