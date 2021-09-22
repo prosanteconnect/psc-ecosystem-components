@@ -14,8 +14,8 @@ runner {
 
 variable "public_hostname" {
   type    = string
-//  default is preprod
-//  default = "forge.test.psc.henix.asipsante.fr"
+##  default is preprod
+  default = "forge.test.psc.henix.asipsante.fr"
 }
 
 variable "image" {
