@@ -14,7 +14,7 @@ runner {
 
 variable "public_hostname" {
   type    = string
-  default = "forge.test.psc.henix.asipsante.fr"
+//  default = "forge.test.psc.henix.asipsante.fr"
 }
 
 variable "image" {
