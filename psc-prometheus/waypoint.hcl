@@ -1,4 +1,4 @@
-project = "prosanteconnect/psc-ecosystem-components/psc-prometheus"
+project = "psc-prometheus"
 
 # Labels can be specified for organizational purposes.
 labels = { "domaine" = "psc" }
