@@ -12,21 +12,10 @@ runner {
   }
 }
 
-variable "public_hostname" {
+variable "datacenter" {
   type    = string
-##  default is preprod
-  default = "forge.test.psc.henix.asipsante.fr"
+  default = "production"
 }
-
-//variable "image" {
-//  type    = string
-//  default = "prom/prometheus"
-//}
-//
-//variable "tag" {
-//  type    = string
-//  default = "latest"
-//}
 
 
 # An application to deploy.
@@ -43,7 +32,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
   deploy {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-prometheus.nomad.tpl", {
-        public_hostname = var.public_hostname
+        datacenter = var.datacenter
         image = "prom/prometheus"
         tag   = "latest"
       })

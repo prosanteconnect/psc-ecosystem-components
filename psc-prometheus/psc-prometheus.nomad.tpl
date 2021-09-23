@@ -1,6 +1,12 @@
 job "psc-prometheus" {
-  datacenters = ["dc1"]
+  datacenters = ["${datacenter}"]
   type = "service"
+
+  vault {
+    policies = ["psc-ecosystem"]
+    change_mode = "restart"
+  }
+
 
   group "monitoring" {
     count = 1
@@ -86,6 +92,15 @@ groups:
       summary: RASS metrics OK
 EOH
       }
+      template {
+        change_mode = "restart"
+        destination = "local/file.env"
+        env = true
+        data = <<EOF
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/prometheus" }}{{ .Data.data.public_hostname }}{{ end }}
+EOF
+      }
+
 
       driver = "docker"
 
@@ -113,7 +128,7 @@ EOH
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
         tags = [
-          "urlprefix-${public_hostname}/psc-prometheus"]
+          "urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus"]
         port = "ui"
 
         check {
