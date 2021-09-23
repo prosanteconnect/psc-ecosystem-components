@@ -111,7 +111,7 @@ EOF
         ]
         args = [
           "--config.file=/etc/prometheus/prometheus.yml",
-          "--web.external-url=https://${public_hostname}/psc-prometheus/",
+          "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
           "--web.route-prefix=/psc-prometheus",
           "--storage.tsdb.retention.time=30d"
         ]
