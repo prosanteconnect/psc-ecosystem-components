@@ -8,8 +8,8 @@ job "psc-prometheus" {
     restart {
       attempts = 2
       interval = "30m"
-      delay    = "15s"
-      mode     = "fail"
+      delay = "15s"
+      mode = "fail"
     }
 
     network {
@@ -91,7 +91,6 @@ EOH
 
       config {
         image = "{image}:${tag}"
-      }
         volumes = [
           "local:/etc/prometheus",
         ]
@@ -113,17 +112,19 @@ EOH
 
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
-        tags = ["urlprefix-${public_hostname}/psc-prometheus"]
+        tags = [
+          "urlprefix-${public_hostname}/psc-prometheus"]
         port = "ui"
 
         check {
-          name     = "prometheus port alive"
-          type     = "http"
-          path     = "/psc-prometheus/-/healthy"
+          name = "prometheus port alive"
+          type = "http"
+          path = "/psc-prometheus/-/healthy"
           interval = "10s"
-          timeout  = "2s"
+          timeout = "2s"
         }
       }
     }
+  }
 }
 
