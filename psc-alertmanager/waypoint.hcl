@@ -34,9 +34,9 @@ app "prosanteconnect/psc-ecosystem-components/psc-alertmanager" {
   }
 }
 
-variable "public_hostname" {
+variable "datacenter" {
   type    = string
-  default = "forge.psc.henix.asipsante.fr"
+  default = "production"
 }
 
 variable "image" {

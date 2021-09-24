@@ -1,5 +1,5 @@
 job "psc-alertmanager" {
-  datacenters = ["dc1"]
+  datacenters = ["${datacenter}"]
   type = "service"
 
   vault {
@@ -33,7 +33,7 @@ job "psc-alertmanager" {
         ]
         args = [
           "--config.file=/etc/alertmanager/alertmanager.yml",
-          "--web.external-url=http://${public_hostname}/"
+          "--web.external-url=http://$\u007BPUBLIC_HOSTNAME\u007D/"
         ]
         ports = [
           "alertmanager_ui"
@@ -92,6 +92,14 @@ receivers:
   - url: http://{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}/pscload/v1/process/continue
 EOH
       }
+      template {
+        change_mode = "restart"
+        destination = "local/file.env"
+        env = true
+        data = <<EOF
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.public_hostname }}{{ end }}
+EOF
+      }
 
       resources {
         cpu = 500
@@ -100,7 +108,7 @@ EOH
 
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
-        tags = ["urlprefix-${public_hostname}/psc-alertmanager strip=/psc-alertmanager"]
+        tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-alertmanager strip=/psc-alertmanager"]
         port = "alertmanager_ui"
         check {
           name     = "alertmanager_ui port alive"
