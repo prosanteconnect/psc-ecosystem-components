@@ -105,7 +105,7 @@ EOF
       driver = "docker"
 
       config {
-        image = "${image}:{tag}"
+        image = "${image}:${tag}"
         volumes = [
           "local:/etc/prometheus",
         ]
