@@ -12,19 +12,13 @@ runner {
   }
 }
 
-variable "datacenter" {
-  type    = string
-  default = "production"
-}
-
-
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
 
   build {
     use "docker-pull" {
-      image = "prom/prometheus"
-      tag   = "latest"
+      image = var.image
+      tag   = var.tag
     }
   }
 
@@ -33,10 +27,25 @@ app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-prometheus.nomad.tpl", {
         datacenter = var.datacenter
-        image = "prom/prometheus"
-        tag   = "latest"
+        image = var.image
+        tag   = var.tag
       })
     }
   }
+}
+
+variable "datacenter" {
+  type    = string
+  default = "production"
+}
+
+variable "image" {
+  type = string
+  default = "prom/prometheus"
+}
+
+variable "tag" {
+  type = string
+  default = "latest"
 }
 
