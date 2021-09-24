@@ -26,7 +26,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-alertmanager" {
   deploy {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-alertmanager.nomad.tpl", {
-        public_hostname = var.public_hostname
+        datacenter = var.datacenter
         image = var.image
         tag = var.tag
       })

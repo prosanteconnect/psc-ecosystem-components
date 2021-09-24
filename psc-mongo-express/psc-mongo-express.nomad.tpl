@@ -1,5 +1,5 @@
 job "psc-mongo-express" {
-  datacenters = ["dc1"]
+  datacenters = ["${datacenter}"]
   type = "service"
 
   vault {
@@ -41,6 +41,14 @@ EOH
         change_mode = "restart"
         env = true
       }
+      template {
+        change_mode = "restart"
+        destination = "local/file.env"
+        env = true
+        data = <<EOF
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/psc-mongo-express" }}{{ .Data.data.public_hostname }}{{ end }}
+EOF
+      }
       config {
         image = "${image}"
         ports = ["ui"]
@@ -52,7 +60,7 @@ EOH
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
         port = "ui"
-        tags = ["urlprefix-${public_hostname}/psc-db/"]
+        tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-db/"]
         check {
           name         = "alive"
           type         = "tcp"

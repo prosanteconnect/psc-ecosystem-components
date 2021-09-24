@@ -26,7 +26,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongo-express" {
   deploy {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-mongo-express.nomad.tpl", {
-        public_hostname = var.public_hostname
+        datacenter = var.datacenter
         image = var.image
         tag = var.tag
       })
@@ -34,9 +34,9 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongo-express" {
   }
 }
 
-variable "public_hostname" {
+variable "datacenter" {
   type    = string
-  default = "forge.psc.henix.asipsante.fr"
+  default = "production"
 }
 
 variable "image" {
