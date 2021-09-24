@@ -1,5 +1,5 @@
 job "psc-rabbitmq" {
-  datacenters = ["dc1"]
+  datacenters = ["${datacenter}"]
   type = "service"
 
   vault {
@@ -55,6 +55,14 @@ EOH
         destination = "secrets/file.env"
         env = true
       }
+      template {
+        change_mode = "restart"
+        destination = "local/file.env"
+        env = true
+        data = <<EOF
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.public_hostname }}{{ end }}
+EOF
+      }
       resources {
         cpu    = 1000
         memory = 2048
@@ -74,7 +82,7 @@ EOH
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D-management"
         port = "management"
-        tags = ["urlprefix-${public_hostname}/rabbitmq/"]
+        tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/rabbitmq/"]
         check {
           name         = "alive"
           type         = "http"
