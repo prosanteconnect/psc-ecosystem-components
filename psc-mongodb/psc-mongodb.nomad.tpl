@@ -1,5 +1,5 @@
 job "psc-mongodb" {
-  datacenters = ["dc1"]
+  datacenters = ["${datacenter}"]
   type = "service"
 
   vault {

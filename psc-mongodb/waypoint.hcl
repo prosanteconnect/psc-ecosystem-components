@@ -11,17 +11,6 @@ runner {
     ignore_changes_outside_path = true
   }
 }
-
-variable "image" {
-  type    = string
-  default = "mongo"
-}
-
-variable "tag" {
-  type    = string
-  default = "latest"
-}
-
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
 
@@ -44,4 +33,17 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
   }
 }
 
+variable "datacenter" {
+  type = string
+  default = "production"
+}
 
+variable "image" {
+  type    = string
+  default = "mongo"
+}
+
+variable "tag" {
+  type    = string
+  default = "latest"
+}
