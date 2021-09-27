@@ -45,5 +45,5 @@ variable "image" {
 
 variable "tag" {
   type    = string
-  default = "latest"
+  default = "4.2-bionic"
 }
