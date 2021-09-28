@@ -10,9 +10,9 @@ runner {
     path = "psc-mongo-express"
     ignore_changes_outside_path = true
     ref = var.datacenter
-    poll {
-      enabled = true
-    }
+  }
+  poll {
+    enabled = true
   }
 }
 
