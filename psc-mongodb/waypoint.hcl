@@ -9,6 +9,10 @@ runner {
     url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
     path = "psc-mongodb"
     ignore_changes_outside_path = true
+    ref = var.datacenter
+    poll {
+      enabled = true
+    }
   }
 }
 # An application to deploy.
@@ -35,7 +39,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
 
 variable "datacenter" {
   type = string
-  default = "production"
+  default = "dc1"
 }
 
 variable "image" {

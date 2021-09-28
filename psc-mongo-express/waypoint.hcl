@@ -9,6 +9,10 @@ runner {
     url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
     path = "psc-mongo-express"
     ignore_changes_outside_path = true
+    ref = var.datacenter
+    poll {
+      enabled = true
+    }
   }
 }
 
@@ -36,7 +40,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongo-express" {
 
 variable "datacenter" {
   type    = string
-  default = "production"
+  default = "dc1"
 }
 
 variable "image" {
