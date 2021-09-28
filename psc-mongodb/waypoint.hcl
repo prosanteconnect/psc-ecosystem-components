@@ -31,6 +31,7 @@ app "dc1/prosanteconnect/psc-ecosystem-components/psc-mongodb" {
       jobspec = templatefile("${path.app}/psc-mongodb.nomad.tpl", {
         image = var.image
         tag = var.tag
+        datacenter = var.datacenter
       })
 
     }
