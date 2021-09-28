@@ -16,7 +16,7 @@ runner {
   }
 }
 # An application to deploy.
-app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
+app "dc1/prosanteconnect/psc-ecosystem-components/psc-mongodb" {
 
   build {
     use "docker-pull" {
