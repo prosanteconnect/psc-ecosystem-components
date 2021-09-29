@@ -38,31 +38,93 @@ job "psc-rabbitmq" {
 
     task "psc-rabbitmq" {
       driver = "docker"
-      env = {
-        RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = "-rabbitmq_management path_prefix \"/rabbitmq\""
-      }
       config {
         image = "${image}:${tag}"
         ports = ["endpoint","management"]
-        volumes = ["name=rabbitmq,io_priority=high,size=5,repl=3:/var/lib/rabbitmq"]
-        volume_driver = "pxd"
+
+        mount {
+          type = "volume"
+          target = "/var/lib/rabbitmq"
+          source = "rabbitmq"
+          readonly = false
+          volume_options {
+            no_copy = false
+            driver_config {
+              name = "pxd"
+              options {
+                io_priority = "high"
+                size = 5
+                repl = 3
+              }
+            }
+          }
+        }
+        mount {
+          type = "bind"
+          target = "/etc/rabbitmq/conf.d/20-management.conf"
+          source = "local/20-management.conf"
+          readonly = false
+          bind_options {
+            propagation = "rshared"
+          }
+        }
+        mount {
+          type = "bind"
+          target = "/etc/rabbitmq/definitions.json"
+          source = "local/definitions.json"
+          readonly = false
+          bind_options {
+            propagation = "rshared"
+          }
+        }
       }
       template {
         data = <<EOH
+RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = "-rabbitmq_management path_prefix \"/rabbitmq\""
 RABBITMQ_DEFAULT_USER="{{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.user }}{{ end }}"
 RABBITMQ_DEFAULT_PASS="{{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.password }}{{ end }}"
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.public_hostname }}{{ end }}
 EOH
         destination = "secrets/file.env"
         env = true
       }
       template {
         change_mode = "restart"
-        destination = "local/file.env"
-        env = true
+        destination = "local/20-management.conf"
         data = <<EOF
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.public_hostname }}{{ end }}
+management.load_definitions = /etc/rabbitmq/definitions.json
+management.tcp.port = 15672
 EOF
       }
+      template {
+        change_mode = "restart"
+        destination = "local/definitions.json"
+        data = <<EOF
+{
+        "bindings": [
+                {
+                        "arguments": {},
+                        "destination": "file.upload",
+                        "destination_type": "queue",
+                        "routing_key": "file.upload",
+                        "source": "amq.topic",
+                        "vhost": "/"
+                }
+        ],
+        "queues": [
+                {
+                        "arguments": {},
+                        "auto_delete": false,
+                        "durable": true,
+                        "name": "file.upload",
+                        "type": "classic",
+                        "vhost": "/"
+                }
+        ]
+}
+EOF
+      }
+
       resources {
         cpu    = 1000
         memory = 2048
@@ -75,7 +137,6 @@ EOF
           type         = "tcp"
           interval     = "10s"
           timeout      = "2s"
-          address_mode = "driver"
           port         = "endpoint"
         }
       }
@@ -86,10 +147,9 @@ EOF
         check {
           name         = "alive"
           type         = "http"
-          path         = "/"
+          path         = "/rabbitmq/"
           interval     = "10s"
           timeout      = "2s"
-          address_mode = "driver"
           port         = "management"
         }
       }
