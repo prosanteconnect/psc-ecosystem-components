@@ -3,18 +3,18 @@ project = "prosanteconnect/psc-ecosystem-components/psc-mongo-express"
 # Labels can be specified for organizational purposes.
 labels = { "domaine" = "psc" }
 
-runner {
-  enabled = true
-  data_source "git" {
-    url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
-    path = "psc-mongo-express"
-    ignore_changes_outside_path = true
-    ref = var.datacenter
-  }
-  poll {
-    enabled = true
-  }
-}
+#runner {
+#  enabled = true
+#  data_source "git" {
+#    url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
+#    path = "psc-mongo-express"
+#    ignore_changes_outside_path = true
+#    ref = var.datacenter
+#  }
+#  poll {
+#    enabled = true
+#  }
+#}
 
 # An application to deploy.
 app "prosanteconnect/psc-ecosystem-components/psc-mongo-express" {
