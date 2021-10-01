@@ -49,5 +49,5 @@ variable "image" {
 
 variable "tag" {
   type    = string
-  default = "3.8.6-management-alpine"
+  default = "management"
 }
