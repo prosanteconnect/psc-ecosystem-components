@@ -40,12 +40,6 @@ job "psc-alertmanager" {
         ]
       }
 
-      artifact {
-        mode = "file" // otherwise it will fail with mode 'any'
-        source = "https://raw.githubusercontent.com/prosanteconnect/psc-ecosystem-components/main/psc-alertmanager/email.tmpl"
-        destination = "local/email.tmpl"
-      }
-
       template {
         destination = "local/email.tmpl"
         change_mode = "restart"
