@@ -72,7 +72,7 @@ job "psc-alertmanager" {
               <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <a href="https://forge.psc.henix.asipsante.fr/prometheus/graph?g0.expr=ps_metric%7Bgroup%3D~%22total%7C0%7C3%7C5%7C8%22%2Coperation%3D~%22create%7Cupdate%7Cdelete%22%7D&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1w"
+                    <a href="{{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.admin_tools_public_hostname}}{{ end }}/prometheus/graph?g0.expr=ps_metric%7Bgroup%3D~%22total%7C0%7C3%7C5%7C8%22%2Coperation%3D~%22create%7Cupdate%7Cdelete%22%7D&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1w"
                        style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
                     color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer;
                     display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda;
@@ -92,7 +92,7 @@ job "psc-alertmanager" {
 
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <form action="https://pscload.psc.api.esante.gouv.fr/pscload/v1/process/continue" method="post">
+                    <form action="https://{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}/pscload/v1/process/continue" method="post">
                       <input type="submit" name="continue" value="Continuer le processus" formmethod="post"
                              formtarget="display-frame"
                              style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
@@ -133,37 +133,28 @@ templates :
 - /etc/alertmanager/template/email.tmpl
 
 route:
-  receiver: 'gmail-notifications'
+  receiver: 'email-notifications'
   routes:
   - receiver: 'pscload-webhook'
     matchers:
     - severity="pscload-OK"
-  - receiver: 'gmail-notifications'
+  - receiver: 'email-notifications'
     matchers:
     - severity="critical"
 
 receivers:
 - name: 'default-receiver'
-- name: 'gmail-notifications'
+- name: 'email-notifications'
   email_configs:
-  - to: testdev.ans@gmail.com
-    from: prosanteconnect.ans@gmail.com
-    smarthost: smtp.gmail.com:587
-    auth_username: prosanteconnect.ans@gmail.com
-    auth_identity: prosanteconnect.ans@gmail.com
-    auth_password: iuhikcrcelpkhoqw
-    send_resolved: true
-    html : {{ `'{{ template "email.custom.html" . }}'` }}
-- name: 'pscload-webhook'
-  email_configs:
-  - to: testdev.ans@gmail.com
-    from: prosanteconnect.ans@gmail.com
-    smarthost: smtp.gmail.com:587
-    auth_username: prosanteconnect.ans@gmail.com
-    auth_identity: prosanteconnect.ans@gmail.com
+  - to: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.receiver}}{{ end }}
+    from: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.sender}}{{ end }}
+    smarthost: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.smarthost}}{{ end }}
+    auth_username: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.sender}}{{ end }}
+    auth_identity: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.sender}}{{ end }}
     auth_password: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.auth_password }}{{ end }}
     send_resolved: true
     html : {{ `'{{ template "email.custom.html" . }}'` }}
+- name: 'pscload-webhook'
   webhook_configs:
   - url: http://{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}/pscload/v1/process/continue
 EOH
