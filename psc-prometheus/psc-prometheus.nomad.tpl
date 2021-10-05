@@ -85,7 +85,7 @@ groups:
     annotations:
       summary: Total PS deletions > {{`{{$value}}`}}
   - alert: pscload-OK
-    expr: (scalar(ps_metric{group="total",operation="create"}) + scalar(ps_metric{group="total",operation="update"}) + scalar(ps_metric{group="total",operation="delete"}) + 1) * scalar(pscload_stage == bool 4) == bool 1
+    expr: ps_metric{group="total"}*scalar(pscload_stage == bool 4) < 5000
     labels:
       severity: pscload-OK
     annotations:
