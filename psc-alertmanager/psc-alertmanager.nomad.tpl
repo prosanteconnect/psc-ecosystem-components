@@ -154,9 +154,9 @@ receivers:
     auth_password: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.auth_password }}{{ end }}
     send_resolved: true
     html : {{ `'{{ template "email.custom.html" . }}'` }}
-- name: 'pscload-webhook'
+{{ range service "pscload" }}- name: 'pscload-webhook'
   webhook_configs:
-  - url: http://{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}/pscload/v1/process/continue
+  - url: http://{{ .Address }}:{{ .Port }}/pscload/v1/process/continue{{ end }}
 EOH
       }
       template {
