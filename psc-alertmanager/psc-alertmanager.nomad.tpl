@@ -149,9 +149,9 @@ receivers:
   - to: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.receiver}}{{ end }}
     from: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.sender}}{{ end }}
     smarthost: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.smarthost}}{{ end }}
-    auth_username: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.sender}}{{ end }}
-    auth_identity: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.sender}}{{ end }}
-    auth_password: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.auth_password }}{{ end }}
+    {{ with secret "psc-ecosystem/alertmanager" }}auth_username: {{ .Data.data.sender}}
+    auth_identity: {{ .Data.data.sender}}
+    auth_password: {{ .Data.data.auth_password }}{{ end }}
     send_resolved: true
     html : {{ `'{{ template "email.custom.html" . }}'` }}
 - name: 'pscload-webhook'
