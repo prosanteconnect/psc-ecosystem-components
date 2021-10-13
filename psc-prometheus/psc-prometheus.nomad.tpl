@@ -67,25 +67,25 @@ groups:
 - name: pscload
   rules:
   - alert: pscload-critical-create-size
-    expr: ps_metric{group="total",operation="create"}*scalar(pscload_stage == bool 4) >= 5000
+    expr: ps_metric{idType="ANY",operation="CREATE"}*scalar(pscload_stage == bool 4) >= 5000
     labels:
       severity: critical
     annotations:
       summary: Total PS creations > {{`{{$value}}`}}
   - alert: pscload-critical-update-size
-    expr: ps_metric{group="total",operation="update"}*scalar(pscload_stage == bool 4) >= 5000
+    expr: ps_metric{idType="ANY",operation="UPDATE"}*scalar(pscload_stage == bool 4) >= 5000
     labels:
       severity: critical
     annotations:
       summary: Total PS updates > {{`{{$value}}`}}
   - alert: pscload-critical-delete-size
-    expr: ps_metric{group="total",operation="delete"}*scalar(pscload_stage == bool 4) >= 5000
+    expr: ps_metric{idType="ANY",operation="DELETE"}*scalar(pscload_stage == bool 4) >= 5000
     labels:
       severity: critical
     annotations:
       summary: Total PS deletions > {{`{{$value}}`}}
   - alert: pscload-OK
-    expr: ps_metric{group="total"}*scalar(pscload_stage == bool 4) < 5000
+    expr: ps_metric{idType="ANY"}*scalar(pscload_stage == bool 4) > 1
     labels:
       severity: pscload-OK
     annotations:
