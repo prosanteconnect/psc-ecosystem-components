@@ -66,26 +66,14 @@ EOH
 groups:
 - name: pscload
   rules:
-  - alert: pscload-critical-create-size
-    expr: ps_metric{idType="ANY",operation="CREATE"}*scalar(pscload_stage == bool 50) >= 5000
+  - alert: pscload-critical-changes-size
+    expr: (scalar(ps_metric{idType="ANY", operation="create"}) + scalar(ps_metric{idType="ANY",operation="delete"}) + scalar(ps_metric{idType="ANY",operation="update"})) > bool (scalar(ps_metric{idType="ANY",operation="upload"})*scalar(pscload_stage == bool 50))
     labels:
       severity: critical
     annotations:
-      summary: Total PS creations > {{`{{$value}}`}}
-  - alert: pscload-critical-update-size
-    expr: ps_metric{idType="ANY",operation="UPDATE"}*scalar(pscload_stage == bool 50) >= 5000
-    labels:
-      severity: critical
-    annotations:
-      summary: Total PS updates > {{`{{$value}}`}}
-  - alert: pscload-critical-delete-size
-    expr: ps_metric{idType="ANY",operation="DELETE"}*scalar(pscload_stage == bool 50) >= 5000
-    labels:
-      severity: critical
-    annotations:
-      summary: Total PS deletions > {{`{{$value}}`}}
+      summary: Total changes creations > {{`{{$value}}`}}
   - alert: pscload-OK
-    expr: ps_metric{idType="ANY"}*scalar(pscload_stage == bool 50) > 1
+    expr: (scalar(ps_metric{idType="ANY", operation="create"}) + scalar(ps_metric{idType="ANY",operation="delete"}) + scalar(ps_metric{idType="ANY",operation="update"})) <= bool (scalar(ps_metric{idType="ANY",operation="upload"})*scalar(pscload_stage == bool 50))
     labels:
       severity: pscload-OK
     annotations:
