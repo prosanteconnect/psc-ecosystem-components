@@ -67,13 +67,13 @@ groups:
 - name: pscload
   rules:
   - alert: pscload-critical-changes-size
-    expr: (scalar(ps_metric{idType="ANY", operation="create"}) + scalar(ps_metric{idType="ANY",operation="delete"}) + scalar(ps_metric{idType="ANY",operation="update"})) > bool (scalar(ps_metric{idType="ANY",operation="upload"})*scalar(pscload_stage == bool 50))
+    expr: pscload_stage == 100
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
   - alert: pscload-OK
-    expr: (scalar(ps_metric{idType="ANY", operation="create"}) + scalar(ps_metric{idType="ANY",operation="delete"}) + scalar(ps_metric{idType="ANY",operation="update"})) <= bool (scalar(ps_metric{idType="ANY",operation="upload"})*scalar(pscload_stage == bool 50))
+    expr: pscload_stage == 50
     labels:
       severity: pscload-OK
     annotations:
