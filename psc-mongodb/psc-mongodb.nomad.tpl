@@ -28,11 +28,11 @@ job "psc-mongodb" {
       port "db" { to = 27017 }
     }
 
-    # install only on "data" nodes
-    constraint {
-      attribute = "${node.class}"
-      value     = "data"
-    }
+//    # install only on "data" nodes
+//    constraint {
+//      attribute = "${node.class}"
+//      value     = "data"
+//    }
 
     task "psc-mongodb" {
       driver = "docker"
