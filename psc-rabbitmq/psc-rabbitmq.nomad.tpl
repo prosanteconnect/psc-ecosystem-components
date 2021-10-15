@@ -36,6 +36,12 @@ job "psc-rabbitmq" {
       port "management" { to = 15672 }
     }
 
+    # install only on "data" nodes
+    constraint {
+      attribute = "${node.class}"
+      value     = "data"
+    }
+
     task "psc-rabbitmq" {
       driver = "docker"
       config {
