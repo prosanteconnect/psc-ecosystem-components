@@ -153,8 +153,9 @@ EOF
           name         = "alive"
           type         = "http"
           path         = "/rabbitmq/"
-          interval     = "10s"
+          interval     = "30s"
           timeout      = "2s"
+          failures_before_critical = 5
           port         = "management"
         }
       }

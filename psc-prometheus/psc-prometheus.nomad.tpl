@@ -123,8 +123,9 @@ EOF
           name = "prometheus port alive"
           type = "http"
           path = "/psc-prometheus/-/healthy"
-          interval = "10s"
+          interval = "30s"
           timeout = "2s"
+          failures_before_critical = 5
         }
       }
     }
