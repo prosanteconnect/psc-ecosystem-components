@@ -181,8 +181,9 @@ EOF
           name     = "alertmanager_ui port alive"
           type     = "http"
           path     = "/-/healthy"
-          interval = "10s"
+          interval = "30s"
           timeout  = "2s"
+          failures_before_critical = 5
         }
       }
     }

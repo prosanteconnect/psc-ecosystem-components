@@ -24,6 +24,11 @@ job "psc-rabbitmq" {
       mode = "fail"
     }
 
+    constraint {
+      attribute = "$\u007Bnode.class\u007D"
+      value     = "data"
+    }
+
     update {
       max_parallel      = 1
       min_healthy_time  = "30s"
@@ -148,8 +153,9 @@ EOF
           name         = "alive"
           type         = "http"
           path         = "/rabbitmq/"
-          interval     = "10s"
+          interval     = "30s"
           timeout      = "2s"
+          failures_before_critical = 5
           port         = "management"
         }
       }
