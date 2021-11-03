@@ -66,14 +66,33 @@ EOH
 groups:
 - name: pscload
   rules:
-  - alert: pscload-critical-changes-size
-    expr: pscload_stage == 100
+  - alert: pscload-critical-adeli-delete-size
+    expr: ps_metric{idType="ADELI",operation="delete"} > scalar(ps_metric{idType="ADELI",operation="upload"}/100)
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
+  - alert: pscload-critical-finess-delete-size
+    expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="upload"}/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes creations > {{`{{$value}}`}}
+  - alert: pscload-critical-siret-delete-size
+    expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="upload"}/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes creations > {{`{{$value}}`}}
+  - alert: pscload-critical-rpps-delete-size
+    expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="upload"}/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes creations > {{`{{$value}}`}}
+
   - alert: pscload-OK
-    expr: pscload_stage == 50
+    expr: absent(ps_metric{idType="ADELI",operation="delete"} >= scalar(ps_metric{idType="ADELI",operation="upload"}/100)) * absent(ps_metric{idType="FINESS",operation="delete"} >= scalar(ps_metric{idType="FINESS",operation="upload"}/100)) * absent(ps_metric{idType="SIRET",operation="delete"} >= scalar(ps_metric{idType="SIRET",operation="upload"}/100)) * absent(ps_metric{idType="RPPS",operation="delete"} >= scalar(ps_metric{idType="RPPS",operation="upload"}/100))
     labels:
       severity: pscload-OK
     annotations:
