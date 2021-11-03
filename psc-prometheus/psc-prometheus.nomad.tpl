@@ -29,6 +29,47 @@ job "psc-prometheus" {
     }
 
     task "psc-prometheus" {
+      driver = "docker"
+
+      config {
+        image = "${image}:${tag}"
+        mount {
+          type = "volume"
+          target = "/prometheus/data"
+          source = "psc-prometheus"
+          readonly = false
+          volume_options {
+            no_copy = false
+            driver_config {
+              name = "pxd"
+              options {
+                io_priority = "high"
+                size = 1
+                repl = 2
+              }
+            }
+          }
+        }
+        mount {
+          type = "bind"
+          target = "/etc/prometheus"
+          source = "local"
+          readonly = false
+          bind_options {
+            propagation = "rshared"
+          }
+        }
+        args = [
+          "--config.file=/etc/prometheus/prometheus.yml",
+          "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
+          "--web.route-prefix=/psc-prometheus",
+          "--storage.tsdb.retention.time=30d"
+        ]
+        ports = [
+          "ui"
+        ]
+      }
+
       template {
         change_mode = "restart"
         destination = "local/prometheus.yml"
@@ -106,25 +147,6 @@ EOH
         data = <<EOF
 PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/prometheus" }}{{ .Data.data.public_hostname }}{{ end }}
 EOF
-      }
-
-
-      driver = "docker"
-
-      config {
-        image = "${image}:${tag}"
-        volumes = [
-          "local:/etc/prometheus",
-        ]
-        args = [
-          "--config.file=/etc/prometheus/prometheus.yml",
-          "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
-          "--web.route-prefix=/psc-prometheus",
-          "--storage.tsdb.retention.time=30d"
-        ]
-        ports = [
-          "ui"
-        ]
       }
 
       resources {
