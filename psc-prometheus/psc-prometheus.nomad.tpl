@@ -24,6 +24,12 @@ job "psc-prometheus" {
         to = 9090
       }
     }
+
+    constraint {
+      attribute = "$\u007Bnode.class\u007D"
+      value     = "data"
+    }
+
     ephemeral_disk {
       size = 300
     }
