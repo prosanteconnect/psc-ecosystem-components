@@ -98,7 +98,7 @@ groups:
       summary: Total changes creations > {{`{{$value}}`}}
 
   - alert: pscload-OK
-    expr: absent(absent(ps_metric{idType="ADELI",operation="delete"} > -1 AND ps_metric{idType="ADELI",operation="delete"} < scalar(ps_metric{idType="ADELI",operation="upload"}/100))) * absent(absent(ps_metric{idType="FINESS",operation="delete"} > -1 AND ps_metric{idType="FINESS",operation="delete"} < scalar(ps_metric{idType="FINESS",operation="upload"}/100))) * absent(absent(ps_metric{}idType="SIRET",operation="delete"} > -1 AND ps_metric{idType="SIRET",operation="delete"} < scalar(ps_metric{idType="SIRET",operation="upload"}/100))) * absent(absent(ps_metric{idType="RPPS",operation="delete"} > -1 AND ps_metric{idType="RPPS",operation="delete"} < scalar(ps_metric{idType="RPPS",operation="upload"}/100)))
+    expr: absent(absent(ps_metric{idType="ADELI",operation="delete"} > -1 AND ps_metric{idType="ADELI",operation="delete"} < scalar(ps_metric{idType="ADELI",operation="upload"}/100))) * absent(absent(ps_metric{idType="FINESS",operation="delete"} > -1 AND ps_metric{idType="FINESS",operation="delete"} < scalar(ps_metric{idType="FINESS",operation="upload"}/100))) * absent(absent(ps_metric{idType="SIRET",operation="delete"} > -1 AND ps_metric{idType="SIRET",operation="delete"} < scalar(ps_metric{idType="SIRET",operation="upload"}/100))) * absent(absent(ps_metric{idType="RPPS",operation="delete"} > -1 AND ps_metric{idType="RPPS",operation="delete"} < scalar(ps_metric{idType="RPPS",operation="upload"}/100)))
     labels:
       severity: pscload-OK
     annotations:
