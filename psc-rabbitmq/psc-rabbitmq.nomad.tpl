@@ -86,7 +86,6 @@ job "psc-rabbitmq" {
       template {
         data = <<EOH
 RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = "-rabbitmq_management path_prefix \"/rabbitmq\""
-RABBITMQ_NODENAME=psc-queues
 RABBITMQ_DEFAULT_USER="{{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.user }}{{ end }}"
 RABBITMQ_DEFAULT_PASS="{{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.password }}{{ end }}"
 PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.public_hostname }}{{ end }}
