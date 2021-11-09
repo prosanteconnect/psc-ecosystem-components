@@ -36,15 +36,27 @@ job "psc-prometheus" {
 
     task "prep-disk" {
       driver = "docker"
-      volume_mount {
-        volume = "psc-prometheus"
-        destination = "/prometheus/data"
-        read_only = false
-      }
       config {
         image = "busybox:latest"
+        mount {
+          type = "volume"
+          target = "/prometheus/data"
+          source = "psc-prometheus"
+          readonly = false
+          volume_options {
+            no_copy = false
+            driver_config {
+              name = "pxd"
+              options {
+                io_priority = "high"
+                size = 1
+                repl = 2
+              }
+            }
+          }
+        }
         command = "sh"
-        args = ["-c", "chown -R 1:1 /prometheus/data"]
+        args = ["-c", "chown -R 65534:65534 /prometheus/data"]
       }
       resources {
         cpu = 200
