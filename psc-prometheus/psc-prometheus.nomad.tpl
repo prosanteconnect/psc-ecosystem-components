@@ -34,7 +34,82 @@ job "psc-prometheus" {
       size = 300
     }
 
+    task "prep-disk" {
+      driver = "docker"
+      config {
+        image = "busybox:latest"
+        mount {
+          type = "volume"
+          target = "/prometheus/data"
+          source = "psc-prometheus"
+          readonly = false
+          volume_options {
+            no_copy = false
+            driver_config {
+              name = "pxd"
+              options {
+                io_priority = "high"
+                size = 1
+                repl = 2
+              }
+            }
+          }
+        }
+        command = "sh"
+        args = ["-c", "chown -R 65534:65534 /prometheus/data"]
+      }
+      resources {
+        cpu = 200
+        memory = 128
+      }
+      lifecycle {
+        hook = "prestart"
+        sidecar = "false"
+      }
+    }
+
     task "psc-prometheus" {
+      driver = "docker"
+
+      config {
+        image = "${image}:${tag}"
+        mount {
+          type = "volume"
+          target = "/prometheus/data"
+          source = "psc-prometheus"
+          readonly = false
+          volume_options {
+            no_copy = false
+            driver_config {
+              name = "pxd"
+              options {
+                io_priority = "high"
+                size = 1
+                repl = 2
+              }
+            }
+          }
+        }
+        mount {
+          type = "bind"
+          target = "/etc/prometheus"
+          source = "local"
+          readonly = false
+          bind_options {
+            propagation = "rshared"
+          }
+        }
+        args = [
+          "--config.file=/etc/prometheus/prometheus.yml",
+          "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
+          "--web.route-prefix=/psc-prometheus",
+          "--storage.tsdb.retention.time=30d"
+        ]
+        ports = [
+          "ui"
+        ]
+      }
+
       template {
         change_mode = "restart"
         destination = "local/prometheus.yml"
@@ -97,10 +172,11 @@ groups:
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
 
-  - alert: pscload-OK
+  - alert: pscload-continue
     expr: absent(absent(ps_metric{idType="ADELI",operation="delete"} > -1 AND ps_metric{idType="ADELI",operation="delete"} < scalar(ps_metric{idType="ADELI",operation="upload"}/100))) * absent(absent(ps_metric{idType="FINESS",operation="delete"} > -1 AND ps_metric{idType="FINESS",operation="delete"} < scalar(ps_metric{idType="FINESS",operation="upload"}/100))) * absent(absent(ps_metric{idType="SIRET",operation="delete"} > -1 AND ps_metric{idType="SIRET",operation="delete"} < scalar(ps_metric{idType="SIRET",operation="upload"}/100))) * absent(absent(ps_metric{idType="RPPS",operation="delete"} > -1 AND ps_metric{idType="RPPS",operation="delete"} < scalar(ps_metric{idType="RPPS",operation="upload"}/100)))
+    for: 2m
     labels:
-      severity: pscload-OK
+      severity: continue
     annotations:
       summary: RASS metrics OK
 EOH
@@ -112,25 +188,6 @@ EOH
         data = <<EOF
 PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/prometheus" }}{{ .Data.data.public_hostname }}{{ end }}
 EOF
-      }
-
-
-      driver = "docker"
-
-      config {
-        image = "${image}:${tag}"
-        volumes = [
-          "local:/etc/prometheus",
-        ]
-        args = [
-          "--config.file=/etc/prometheus/prometheus.yml",
-          "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
-          "--web.route-prefix=/psc-prometheus",
-          "--storage.tsdb.retention.time=30d"
-        ]
-        ports = [
-          "ui"
-        ]
       }
 
       resources {
