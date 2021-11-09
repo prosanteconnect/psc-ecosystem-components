@@ -46,8 +46,8 @@ job "psc-rabbitmq" {
       config {
         image = "${image}:${tag}"
         ports = ["endpoint","management"]
-        args = ["run", "--hostname", "psc-rabbitmq"]
-
+        command = "run"
+        args = ["--hostname", "psc-rabbitmq"]
         mount {
           type = "volume"
           target = "/var/lib/rabbitmq"
