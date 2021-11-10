@@ -124,7 +124,7 @@ scrape_configs:
 
   - job_name: 'pscload-actuator'
     metrics_path: '/pscload/v1/actuator/prometheus'
-    scrape_interval: 30s
+    scrape_interval: 5s
     static_configs:
     - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
 
@@ -173,7 +173,7 @@ groups:
       summary: Total changes creations > {{`{{$value}}`}}
 
   - alert: pscload-continue
-    expr: absent(absent(ps_metric{idType="ADELI",operation="delete"} > -1 AND ps_metric{idType="ADELI",operation="delete"} < scalar(ps_metric{idType="ADELI",operation="upload"}/100))) * absent(absent(ps_metric{idType="FINESS",operation="delete"} > -1 AND ps_metric{idType="FINESS",operation="delete"} < scalar(ps_metric{idType="FINESS",operation="upload"}/100))) * absent(absent(ps_metric{idType="SIRET",operation="delete"} > -1 AND ps_metric{idType="SIRET",operation="delete"} < scalar(ps_metric{idType="SIRET",operation="upload"}/100))) * absent(absent(ps_metric{idType="RPPS",operation="delete"} > -1 AND ps_metric{idType="RPPS",operation="delete"} < scalar(ps_metric{idType="RPPS",operation="upload"}/100)))
+    expr: pscload_stage == 50
     for: 2m
     labels:
       severity: continue
