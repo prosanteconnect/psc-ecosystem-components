@@ -133,14 +133,19 @@ templates :
 - /etc/alertmanager/template/email.tmpl
 
 route:
+  group_by: ['severity']
   receiver: 'email-notifications'
   routes:
   - receiver: 'pscload-webhook'
     matchers:
-    - severity="pscload-OK"
+    - severity="continue"
   - receiver: 'email-notifications'
     matchers:
     - severity="critical"
+
+inhibit_rules:
+- source_matchers: [severity="critical"]
+  target_matchers: [severity="continue"]
 
 receivers:
 - name: 'default-receiver'
