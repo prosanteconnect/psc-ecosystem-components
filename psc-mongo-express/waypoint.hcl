@@ -23,6 +23,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongo-express" {
     use "docker-pull" {
       image = var.image
       tag   = var.tag
+      disable_entrypoint = true
     }
   }
 
