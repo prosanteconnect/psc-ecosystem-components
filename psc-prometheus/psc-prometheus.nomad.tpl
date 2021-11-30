@@ -24,11 +24,92 @@ job "psc-prometheus" {
         to = 9090
       }
     }
+
+    constraint {
+      attribute = "$\u007Bnode.class\u007D"
+      value     = "data"
+    }
+
     ephemeral_disk {
       size = 300
     }
 
+    task "prep-disk" {
+      driver = "docker"
+      config {
+        image = "busybox:latest"
+        mount {
+          type = "volume"
+          target = "/prometheus/data"
+          source = "psc-prometheus"
+          readonly = false
+          volume_options {
+            no_copy = false
+            driver_config {
+              name = "pxd"
+              options {
+                io_priority = "high"
+                size = 1
+                repl = 2
+              }
+            }
+          }
+        }
+        command = "sh"
+        args = ["-c", "chown -R 65534:65534 /prometheus/data"]
+      }
+      resources {
+        cpu = 200
+        memory = 128
+      }
+      lifecycle {
+        hook = "prestart"
+        sidecar = "false"
+      }
+    }
+
     task "psc-prometheus" {
+      driver = "docker"
+
+      config {
+        image = "${image}:${tag}"
+        mount {
+          type = "volume"
+          target = "/prometheus/data"
+          source = "psc-prometheus"
+          readonly = false
+          volume_options {
+            no_copy = false
+            driver_config {
+              name = "pxd"
+              options {
+                io_priority = "high"
+                size = 1
+                repl = 2
+              }
+            }
+          }
+        }
+        mount {
+          type = "bind"
+          target = "/etc/prometheus"
+          source = "local"
+          readonly = false
+          bind_options {
+            propagation = "rshared"
+          }
+        }
+        args = [
+          "--config.file=/etc/prometheus/prometheus.yml",
+          "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
+          "--web.route-prefix=/psc-prometheus",
+          "--storage.tsdb.retention.time=30d"
+        ]
+        ports = [
+          "ui"
+        ]
+      }
+
       template {
         change_mode = "restart"
         destination = "local/prometheus.yml"
@@ -66,16 +147,36 @@ EOH
 groups:
 - name: pscload
   rules:
-  - alert: pscload-critical-changes-size
-    expr: pscload_stage == 100
+  - alert: pscload-critical-adeli-delete-size
+    expr: ps_metric{idType="ADELI",operation="delete"} > scalar(ps_metric{idType="ADELI",operation="upload"}/100)
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
-  - alert: pscload-OK
-    expr: pscload_stage == 50
+  - alert: pscload-critical-finess-delete-size
+    expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="upload"}/100)
     labels:
-      severity: pscload-OK
+      severity: critical
+    annotations:
+      summary: Total changes creations > {{`{{$value}}`}}
+  - alert: pscload-critical-siret-delete-size
+    expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="upload"}/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes creations > {{`{{$value}}`}}
+  - alert: pscload-critical-rpps-delete-size
+    expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="upload"}/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes creations > {{`{{$value}}`}}
+
+  - alert: pscload-continue
+    expr: pscload_stage == 50
+    for: 2m
+    labels:
+      severity: continue
     annotations:
       summary: RASS metrics OK
 EOH
@@ -87,25 +188,6 @@ EOH
         data = <<EOF
 PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/prometheus" }}{{ .Data.data.public_hostname }}{{ end }}
 EOF
-      }
-
-
-      driver = "docker"
-
-      config {
-        image = "${image}:${tag}"
-        volumes = [
-          "local:/etc/prometheus",
-        ]
-        args = [
-          "--config.file=/etc/prometheus/prometheus.yml",
-          "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
-          "--web.route-prefix=/psc-prometheus",
-          "--storage.tsdb.retention.time=30d"
-        ]
-        ports = [
-          "ui"
-        ]
       }
 
       resources {
@@ -123,8 +205,9 @@ EOF
           name = "prometheus port alive"
           type = "http"
           path = "/psc-prometheus/-/healthy"
-          interval = "10s"
+          interval = "30s"
           timeout = "2s"
+          failures_before_critical = 5
         }
       }
     }

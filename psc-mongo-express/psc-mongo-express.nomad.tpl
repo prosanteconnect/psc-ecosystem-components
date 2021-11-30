@@ -64,8 +64,9 @@ EOF
         check {
           name         = "alive"
           type         = "tcp"
-          interval     = "10s"
+          interval     = "30s"
           timeout      = "5s"
+          failures_before_critical = 5
           port         = "ui"
         }
       }

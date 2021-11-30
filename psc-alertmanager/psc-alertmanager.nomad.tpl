@@ -133,14 +133,19 @@ templates :
 - /etc/alertmanager/template/email.tmpl
 
 route:
+  group_by: ['severity']
   receiver: 'email-notifications'
   routes:
   - receiver: 'pscload-webhook'
     matchers:
-    - severity="pscload-OK"
+    - severity="continue"
   - receiver: 'email-notifications'
     matchers:
     - severity="critical"
+
+inhibit_rules:
+- source_matchers: [severity="critical"]
+  target_matchers: [severity="continue"]
 
 receivers:
 - name: 'default-receiver'
@@ -181,8 +186,9 @@ EOF
           name     = "alertmanager_ui port alive"
           type     = "http"
           path     = "/-/healthy"
-          interval = "10s"
+          interval = "30s"
           timeout  = "2s"
+          failures_before_critical = 5
         }
       }
     }
