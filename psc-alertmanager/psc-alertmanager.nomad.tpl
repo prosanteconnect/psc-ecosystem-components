@@ -173,11 +173,6 @@ PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.publ
 EOF
       }
 
-      resources {
-        cpu = 500
-        memory = 1024
-      }
-
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
         tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-alertmanager strip=/psc-alertmanager"]
