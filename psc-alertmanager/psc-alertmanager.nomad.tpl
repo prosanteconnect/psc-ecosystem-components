@@ -28,7 +28,7 @@ job "psc-alertmanager" {
       config {
         image = "${image}:${tag}"
         volumes = [
-          "local/alertmanager.yml:/etc/alertmanager/alertmanager.yml",
+          "secrets/alertmanager.yml:/etc/alertmanager/alertmanager.yml",
           "local/email.tmpl:/etc/alertmanager/template/email.tmpl",
         ]
         args = [
@@ -124,7 +124,7 @@ EOH
 
       template {
         change_mode = "restart"
-        destination = "local/alertmanager.yml"
+        destination = "secrets/alertmanager.yml"
         data = <<EOH
 global:
   resolve_timeout: 1m
