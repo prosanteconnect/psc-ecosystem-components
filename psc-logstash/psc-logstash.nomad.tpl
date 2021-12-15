@@ -42,7 +42,7 @@ input {
 
 filter {
   grok {
-    match     => { "message" => "%%%%{DATE_EU:date}%%%%{SPACE}%%%%{TIME:time}%%%%{SPACE}%%%%{LOGLEVEL:level}%%%%{SPACE}%%%%{WORD:hostname}%%%%{SPACE}\[%%%%{DATA:connector}\]%%%%{SPACE}(?<class>(?:\.?[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)%%%%{SPACE}:%%%%{SPACE}%%%%{GREEDYDATA:message}" }
+    match     => { "message" => "\u0025\u0025{DATE_EU:date}\u0025\u0025{SPACE}\u0025\u0025{TIME:time}\u0025\u0025{SPACE}\u0025\u0025{LOGLEVEL:level}\u0025\u0025{SPACE}\u0025\u0025{WORD:hostname}\u0025\u0025{SPACE}\[\u0025\u0025{DATA:connector}\]\u0025\u0025{SPACE}(?<class>(?:\.?[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)\u0025\u0025{SPACE}:\u0025\u0025{SPACE}\u0025\u0025{GREEDYDATA:message}" }
     overwrite => [ "message" ]
   }
   date {
@@ -54,7 +54,7 @@ output {
   if "_grokparsefailure" not in [tags] {
     elasticsearch {
       {{range service "elasticsearch" }}hosts => [ "http://{{.Address}}:{{.Port}}" ]{{end}}
-      index => "%%%%{[@metadata][beat]}-%%%%{[@metadata][version]}-%%%%{+YYYY.MM.dd}"
+      index => "\u0025\u0025{[@metadata][beat]}-\u0025\u0025{[@metadata][version]}-\u0025\u0025{+YYYY.MM.dd}"
       manage_template => false
     }
   }
