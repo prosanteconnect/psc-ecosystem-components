@@ -32,6 +32,8 @@ app "prosanteconnect/psc-ecosystem-components/psc-logstash" {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-logstash.nomad.tpl", {
         datacenter = var.datacenter
+        image = var.image
+        tag = var.tag
       })
 
     }
