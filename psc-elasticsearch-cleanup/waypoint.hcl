@@ -1,13 +1,13 @@
-project = "prosanteconnect/psc-ecosystem-components/psc-logstash"
+project = "prosanteconnect/psc-ecosystem-components/psc-elasticsearch-cleanup"
 
 # Labels can be specified for organizational purposes.
 labels = { "domaine" = "psc" }
 
 runner {
-  enabled = true   
+  enabled = true
   data_source "git" {
     url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
-    path = "psc-logstash"
+    path = "psc-elasticsearch-cleanup"
     ignore_changes_outside_path = true
     ref = var.datacenter
   }
@@ -17,7 +17,7 @@ runner {
   }
 }
 # An application to deploy.
-app "prosanteconnect/psc-ecosystem-components/psc-logstash" {
+app "prosanteconnect/psc-ecosystem-components/psc-elasticsearch-cleanup" {
 
   build {
     use "docker-pull" {
@@ -30,10 +30,8 @@ app "prosanteconnect/psc-ecosystem-components/psc-logstash" {
   # Deploy to Nomad
   deploy {
     use "nomad-jobspec" {
-      jobspec = templatefile("${path.app}/psc-logstash.nomad.tpl", {
+      jobspec = templatefile("${path.app}/psc-elasticsearch-cleanup.nomad.tpl", {
         datacenter = var.datacenter
-        image = var.image
-        tag = var.tag
       })
 
     }
@@ -47,10 +45,10 @@ variable "datacenter" {
 
 variable "image" {
   type = string
-  default = "library/logstash"
+  default = "untergeek/curator"
 }
 
 variable "tag" {
   type = string
-  default = "7.14.2"
+  default = "5.8.4"
 }
