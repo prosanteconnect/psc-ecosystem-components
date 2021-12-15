@@ -42,7 +42,7 @@ input {
 
 filter {
   grok {
-    match     => { "message" => "%%%{DATE_EU:date}%%%{SPACE}%%%{TIME:time}%%%{SPACE}%%%{LOGLEVEL:level}%%%{SPACE}%%%{WORD:hostname}%%%{SPACE}\[%%%{DATA:connector}\]%%%{SPACE}(?<class>(?:\.?[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)%%%{SPACE}:%%%{SPACE}%%%{GREEDYDATA:message}" }
+    match     => { "message" => "%%%%{DATE_EU:date}%%%%{SPACE}%%%%{TIME:time}%%%%{SPACE}%%%%{LOGLEVEL:level}%%%%{SPACE}%%%%{WORD:hostname}%%%%{SPACE}\[%%%%{DATA:connector}\]%%%%{SPACE}(?<class>(?:\.?[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)%%%%{SPACE}:%%%%{SPACE}%%%%{GREEDYDATA:message}" }
     overwrite => [ "message" ]
   }
   date {
@@ -54,7 +54,7 @@ output {
   if "_grokparsefailure" not in [tags] {
     elasticsearch {
       {{range service "elasticsearch" }}hosts => [ "http://{{.Address}}:{{.Port}}" ]{{end}}
-      index => "%%%{[@metadata][beat]}-%%%{[@metadata][version]}-%%%{+YYYY.MM.dd}"
+      index => "%%%%{[@metadata][beat]}-%%%%{[@metadata][version]}-%%%%{+YYYY.MM.dd}"
       manage_template => false
     }
   }
