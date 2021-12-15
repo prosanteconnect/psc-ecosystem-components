@@ -54,7 +54,7 @@ output {
   if "_grokparsefailure" not in [tags] {
     elasticsearch {
       {{range service "elasticsearch" }}hosts => [ "http://{{.Address}}:{{.Port}}" ]{{end}}
-      index => "%%{[@metadata][beat]}-%%{[@metadata][version]}-%%{+YYYY.MM.dd}"
+      index => "%%{[\u0040metadata][beat]}-%%{[@metadata][version]}-%%{+YYYY.MM.dd}"
       manage_template => false
     }
   }
