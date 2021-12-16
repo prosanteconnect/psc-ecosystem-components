@@ -190,11 +190,6 @@ PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/prometheus" }}{{ .Data.data.public
 EOF
       }
 
-      resources {
-        cpu = 500
-        memory = 1024
-      }
-
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
         tags = [
