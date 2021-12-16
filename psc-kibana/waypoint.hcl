@@ -32,8 +32,9 @@ app "prosanteconnect/psc-ecosystem-components/psc-kibana" {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-kibana.nomad.tpl", {
         datacenter = var.datacenter
+        image = var.image
+        tag = var.tag
       })
-
     }
   }
 }
