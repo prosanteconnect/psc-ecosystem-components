@@ -32,6 +32,8 @@ app "prosanteconnect/psc-ecosystem-components/psc-elasticsearch-cleanup" {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/psc-elasticsearch-cleanup.nomad.tpl", {
         datacenter = var.datacenter
+        image = var.image
+        tag = var.tag
       })
 
     }
