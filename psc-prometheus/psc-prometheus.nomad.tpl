@@ -123,7 +123,7 @@ global:
 scrape_configs:
 
   - job_name: 'pscload-actuator'
-    metrics_path: '/pscload/v1/actuator/prometheus'
+    metrics_path: '/pscload/v2/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
     - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
