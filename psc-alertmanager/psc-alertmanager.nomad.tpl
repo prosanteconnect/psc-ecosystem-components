@@ -161,7 +161,7 @@ receivers:
     html : {{ `'{{ template "email.custom.html" . }}'` }}
 - name: 'pscload-webhook'
 {{ range service "pscload" }}  webhook_configs:
-  - url: http://{{ .Address }}:{{ .Port }}/pscload/v1/process/continue{{ end }}
+  - url: http://{{ .Address }}:{{ .Port }}/pscload/v2/process/continue{{ end }}
 EOH
       }
       template {
