@@ -148,25 +148,25 @@ groups:
 - name: pscload
   rules:
   - alert: pscload-critical-adeli-delete-size
-    expr: ps_metric{idType="ADELI",operation="delete"} > scalar(ps_metric{idType="ADELI",operation="upload"}/100)
+    expr: ps_metric{idType="ADELI",operation="delete"} > scalar(ps_metric{idType="ADELI",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
   - alert: pscload-critical-finess-delete-size
-    expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="upload"}/100)
+    expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
   - alert: pscload-critical-siret-delete-size
-    expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="upload"}/100)
+    expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
   - alert: pscload-critical-rpps-delete-size
-    expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="upload"}/100)
+    expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
