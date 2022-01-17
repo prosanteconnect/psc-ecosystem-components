@@ -51,6 +51,7 @@ rules:
       url: http://{{env "NOMAD_IP_webhooker"}}:9999/pscload/v2/process/continue
       header Accept: "application/json"
       success_http_status: 202
+      method: POST
     block: 10m
 EOH
         }
