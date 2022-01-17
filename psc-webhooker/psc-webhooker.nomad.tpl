@@ -57,7 +57,7 @@ EOH
 
       driver = "docker"
       config {
-        image = ${image}:${tag}
+        image = "${image}:${tag}"
         volumes = ["local:/config"]
         args = [ "--verbose" 
 		]
