@@ -47,8 +47,8 @@ job "psc-mongodb" {
       config {
         image = "${image}:${tag}"
         ports = ["db"]
-        volumes = ["name=psc-mongodb,fs=xfs,io_priority=high,size=8,repl=3:/data/db",
-          "name=psc-mongodb-config, fs=xfs, io_priority=high, size=1, repl=3:/data/configdb"]
+        volumes = ["name=psc-mongodb,fs=xfs,io_priority=high,size=8,repl=2:/data/db",
+          "name=psc-mongodb-config, fs=xfs, io_priority=high, size=1, repl=2:/data/configdb"]
         volume_driver = "pxd"
       }
       resources {

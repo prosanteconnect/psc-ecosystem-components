@@ -23,6 +23,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-alertmanager" {
     use "docker-pull" {
       image = var.image
       tag   = var.tag
+	  disable_entrypoint = true
     }
   }
 
