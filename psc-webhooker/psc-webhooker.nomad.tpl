@@ -59,7 +59,8 @@ EOH
       config {
         image = ${image}:${tag}
         volumes = ["local:/config"]
-        args = ["--verbose"]
+        args = [ "--verbose" 
+		]
         ports = [ "webhooker" ]
       }
 
