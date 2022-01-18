@@ -148,7 +148,6 @@ inhibit_rules:
   target_matchers: [severity="continue"]
 
 receivers:
-- name: 'default-receiver'
 - name: 'email-notifications'
   email_configs:
   - to: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.receiver}}{{ end }}
@@ -161,8 +160,8 @@ receivers:
     require_tls: false
     html : {{ `'{{ template "email.custom.html" . }}'` }}
 - name: 'pscload-webhook'
-{{ range service "pscload" }}  webhook_configs:
-  - url: http://{{ .Address }}:{{ .Port }}/pscload/v2/process/continue{{ end }}
+{{ range service "webhooker" }}  webhook_configs:
+  - url: http://{{ .Address }}:{{ .Port }}/webhooker{{ end }}
 EOH
       }
       template {
