@@ -1,23 +1,23 @@
-project = "prosanteconnect/psc-ecosystem-components/psc-rabbitmq"
+project = "prosanteconnect/psc-ecosystem-components/psc-webhooker"
 
 # Labels can be specified for organizational purposes.
 labels = { "domaine" = "psc" }
 
-#runner {
-#  enabled = true
-#  data_source "git" {
-#    url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
-#    path = "psc-rabbitmq"
-#    ignore_changes_outside_path = true
-#    ref = var.datacenter
-#  }
-#  poll {
-#    enabled = true
-#  }
-#}
+runner {
+  enabled = true
+  data_source "git" {
+    url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
+    path = "psc-webhooker"
+    ignore_changes_outside_path = true
+    ref = var.datacenter
+  }
+  poll {
+    enabled = false
+  }
+}
 
 # An application to deploy.
-app "prosanteconnect/psc-ecosystem-components/psc-rabbitmq" {
+app "prosanteconnect/psc-ecosystem-components/psc-webhooker" {
 
   build {
     use "docker-pull" {
@@ -30,7 +30,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-rabbitmq" {
   # Deploy to Nomad
   deploy {
     use "nomad-jobspec" {
-      jobspec = templatefile("${path.app}/psc-rabbitmq.nomad.tpl", {
+      jobspec = templatefile("${path.app}/psc-webhooker.nomad.tpl", {
         datacenter = var.datacenter
         image = var.image
         tag = var.tag
@@ -38,6 +38,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-rabbitmq" {
     }
   }
 }
+
 variable "datacenter" {
   type    = string
   default = "dc1"
@@ -45,10 +46,10 @@ variable "datacenter" {
 
 variable "image" {
   type    = string
-  default = "rabbitmq"
+  default = "krpn/prometheus-alert-webhooker"
 }
 
 variable "tag" {
   type    = string
-  default = "management"
+  default = "latest"
 }

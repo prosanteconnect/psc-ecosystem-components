@@ -26,7 +26,7 @@ job "elasticsearch" {
         image = "${image}:${tag}"
         ports = ["es", "ed"]
         volumes = [
-          "name=elasticsearch,io_priority=high,size=20,repl=3:/usr/share/elasticsearch/data"
+          "name=elasticsearch,io_priority=high,size=20,repl=2:/usr/share/elasticsearch/data"
         ]
         volume_driver = "pxd"
       }

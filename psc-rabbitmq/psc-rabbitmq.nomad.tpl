@@ -59,7 +59,7 @@ job "psc-rabbitmq" {
               options {
                 io_priority = "high"
                 size = 5
-                repl = 3
+                repl = 2
               }
             }
           }
@@ -106,26 +106,117 @@ EOF
         destination = "local/definitions.json"
         data = <<EOF
 {
-        "bindings": [
-                {
-                        "arguments": {},
-                        "destination": "file.upload",
-                        "destination_type": "queue",
-                        "routing_key": "file.upload",
-                        "source": "amq.topic",
-                        "vhost": "/"
-                }
-        ],
-        "queues": [
-                {
-                        "arguments": {},
-                        "auto_delete": false,
-                        "durable": true,
-                        "name": "file.upload",
-                        "type": "classic",
-                        "vhost": "/"
-                }
-        ]
+	"queues": [
+		{
+		  "arguments": {},
+		  "auto_delete": false,
+		  "durable": true,
+		  "name": "file.upload",
+		  "type": "classic",
+		  "vhost": "/"
+		},
+		{
+		  "name": "ps-queue",
+		  "vhost": "/",
+		  "durable": true,
+		  "auto_delete": false,
+		  "arguments": {}
+		},
+		{
+		  "name": "contact-queue.parking-lot",
+		  "vhost": "/",
+		  "durable": true,
+		  "auto_delete": false,
+		  "arguments": {}
+		},
+		{
+		  "name": "contact-queue.dlq",
+		  "vhost": "/",
+		  "durable": true,
+		  "auto_delete": false,
+		  "arguments": {}
+		},
+		{
+		  "name": "contact-queue",
+		  "vhost": "/",
+		  "durable": true,
+		  "auto_delete": false,
+		  "arguments": {
+			"x-dead-letter-exchange": "contact-queue.dlx"
+		  }
+		}
+	],
+	  "exchanges": [
+		{
+		  "name": "contact-messages-exchange",
+		  "vhost": "/",
+		  "type": "direct",
+		  "durable": true,
+		  "auto_delete": false,
+		  "internal": false,
+		  "arguments": {}
+		},
+		{
+		  "name": "contact-queueexchange.parking-lot",
+		  "vhost": "/",
+		  "type": "fanout",
+		  "durable": true,
+		  "auto_delete": false,
+		  "internal": false,
+		  "arguments": {}
+		},
+		{
+		  "name": "contact-queue.dlx",
+		  "vhost": "/",
+		  "type": "fanout",
+		  "durable": true,
+		  "auto_delete": false,
+		  "internal": false,
+		  "arguments": {}
+		}
+	],
+		"bindings": [
+		{
+		  "arguments": {},
+		  "destination": "file.upload",
+		  "destination_type": "queue",
+		  "routing_key": "file.upload",
+		  "source": "amq.topic",
+		  "vhost": "/"
+		},
+			{
+		  "source": "contact-messages-exchange",
+		  "vhost": "/",
+		  "destination": "contact-queue",
+		  "destination_type": "queue",
+		  "routing_key": "ROUTING_KEY_CONTACT_MESSAGES_QUEUE",
+		  "arguments": {}
+		},
+		{
+		  "source": "contact-messages-exchange",
+		  "vhost": "/",
+		  "destination": "contact-queue",
+		  "destination_type": "queue",
+		  "routing_key": "contact-queue",
+		  "arguments": {}
+		},
+		{
+		  "source": "contact-queue.dlx",
+		  "vhost": "/",
+		  "destination": "contact-queue.dlq",
+		  "destination_type": "queue",
+		  "routing_key": "",
+		  "arguments": {}
+		},
+		{
+		  "source": "contact-queueexchange.parking-lot",
+		  "vhost": "/",
+		  "destination": "contact-queue.parking-lot",
+		  "destination_type": "queue",
+		  "routing_key": "",
+		  "arguments": {}
+		}
+	]
 }
 EOF
       }

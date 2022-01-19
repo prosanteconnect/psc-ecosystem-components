@@ -34,62 +34,11 @@ job "psc-prometheus" {
       size = 300
     }
 
-    task "prep-disk" {
-      driver = "docker"
-      config {
-        image = "busybox:latest"
-        mount {
-          type = "volume"
-          target = "/prometheus/data"
-          source = "psc-prometheus"
-          readonly = false
-          volume_options {
-            no_copy = false
-            driver_config {
-              name = "pxd"
-              options {
-                io_priority = "high"
-                size = 1
-                repl = 2
-              }
-            }
-          }
-        }
-        command = "sh"
-        args = ["-c", "chown -R 65534:65534 /prometheus/data"]
-      }
-      resources {
-        cpu = 200
-        memory = 128
-      }
-      lifecycle {
-        hook = "prestart"
-        sidecar = "false"
-      }
-    }
-
     task "psc-prometheus" {
       driver = "docker"
 
       config {
         image = "${image}:${tag}"
-        mount {
-          type = "volume"
-          target = "/prometheus/data"
-          source = "psc-prometheus"
-          readonly = false
-          volume_options {
-            no_copy = false
-            driver_config {
-              name = "pxd"
-              options {
-                io_priority = "high"
-                size = 1
-                repl = 2
-              }
-            }
-          }
-        }
         mount {
           type = "bind"
           target = "/etc/prometheus"
@@ -123,7 +72,7 @@ global:
 scrape_configs:
 
   - job_name: 'pscload-actuator'
-    metrics_path: '/pscload/v1/actuator/prometheus'
+    metrics_path: '/pscload/v2/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
     - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
@@ -148,25 +97,25 @@ groups:
 - name: pscload
   rules:
   - alert: pscload-critical-adeli-delete-size
-    expr: ps_metric{idType="ADELI",operation="delete"} > scalar(ps_metric{idType="ADELI",operation="upload"}/100)
+    expr: ps_metric{idType="ADELI",operation="delete"} > scalar(ps_metric{idType="ADELI",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
   - alert: pscload-critical-finess-delete-size
-    expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="upload"}/100)
+    expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
   - alert: pscload-critical-siret-delete-size
-    expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="upload"}/100)
+    expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
   - alert: pscload-critical-rpps-delete-size
-    expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="upload"}/100)
+    expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:

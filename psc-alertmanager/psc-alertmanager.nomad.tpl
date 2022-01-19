@@ -72,7 +72,7 @@ job "psc-alertmanager" {
               <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <a href="https://{{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.public_hostname}}{{ end }}/prometheus/graph?g0.expr=ps_metric%7Bgroup%3D~%22total%7C0%7C3%7C5%7C8%22%2Coperation%3D~%22create%7Cupdate%7Cdelete%22%7D&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1w"
+                    <a href="https://{{ with secret "psc-ecosystem/prometheus" }}{{ .Data.data.public_hostname}}{{ end }}/psc-prometheus/graph"
                        style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
                     color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer;
                     display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda;
@@ -148,7 +148,6 @@ inhibit_rules:
   target_matchers: [severity="continue"]
 
 receivers:
-- name: 'default-receiver'
 - name: 'email-notifications'
   email_configs:
   - to: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.receiver}}{{ end }}
@@ -158,10 +157,11 @@ receivers:
     auth_identity: {{ .Data.data.sender}}
     auth_password: {{ .Data.data.auth_password }}{{ end }}
     send_resolved: true
+    require_tls: false
     html : {{ `'{{ template "email.custom.html" . }}'` }}
 - name: 'pscload-webhook'
-{{ range service "pscload" }}  webhook_configs:
-  - url: http://{{ .Address }}:{{ .Port }}/pscload/v1/process/continue{{ end }}
+{{ range service "webhooker" }}  webhook_configs:
+  - url: http://{{ .Address }}:{{ .Port }}/webhooker{{ end }}
 EOH
       }
       template {
