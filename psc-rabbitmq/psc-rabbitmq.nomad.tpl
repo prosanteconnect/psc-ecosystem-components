@@ -59,7 +59,7 @@ job "psc-rabbitmq" {
               options {
                 io_priority = "high"
                 size = 5
-                repl = 3
+                repl = 2
               }
             }
           }
