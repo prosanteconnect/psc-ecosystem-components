@@ -26,7 +26,7 @@ job "kibana" {
                data = <<EOH
 server.name: kibana
 server.basePath: "/kibana"
-server.publicBaseUrl: "https://{{ with secret "psc-ecosystem/psc-kibana" }}{{ .Data.data.public_hostname }}{{ end }}/kibana"
+server.publicBaseUrl: "https://{{ with secret "psc-ecosystem/admin" }}{{ .Data.data.public_hostname }}{{ end }}/kibana"
 server.rewriteBasePath: true
 {{range service "elasticsearch" }}elasticsearch.hosts: [ "http://{{.Address}}:{{.Port}}" ]{{end}}
 server.host: "0.0.0.0"
