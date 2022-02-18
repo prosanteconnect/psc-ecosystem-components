@@ -23,7 +23,6 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
       image = var.image
       tag   = var.tag
 	  disable_entrypoint = true
-      registry_path = var.registry_path
     }
   }
 
@@ -34,6 +33,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
         image = var.image
         tag = var.tag
         datacenter = var.datacenter
+        registry_path = var.registry_path
       })
 
     }
