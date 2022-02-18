@@ -41,10 +41,10 @@ input {
 }
 
 filter {
-grok {
+  grok {
+    break_on_match => "true"
     match     => { "message" => "%%%{DATE_EU:date}%%%{SPACE}%%%{TIME:time}%%%{SPACE}%%%{LOGLEVEL:level}%%%{SPACE}%%%{WORD:hostname}%%%{SPACE}\[%%%{DATA:connector}\]%%%{SPACE}(?<class>(?:\.?[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)%%%{SPACE}:%%%{SPACE}%%%{DATA:metric}%%%{SPACE}---%%%{SPACE}%%%{NUMBER:value:int}" }
     overwrite => [ "message" ]
-    break_on_match => "true"
   }
   grok {
     match     => { "message" => "%%%{DATE_EU:date}%%%{SPACE}%%%{TIME:time}%%%{SPACE}%%%{LOGLEVEL:level}%%%{SPACE}%%%{WORD:hostname}%%%{SPACE}\[%%%{DATA:connector}\]%%%{SPACE}(?<class>(?:\.?[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)%%%{SPACE}:%%%{SPACE}%%%{GREEDYDATA:message}" }
