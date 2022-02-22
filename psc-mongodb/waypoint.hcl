@@ -34,6 +34,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
         image = var.image
         tag = var.tag
         datacenter = var.datacenter
+        registry_path = var.registry_path
       })
 
     }
@@ -43,6 +44,11 @@ app "prosanteconnect/psc-ecosystem-components/psc-mongodb" {
 variable "datacenter" {
   type = string
   default = "dc1"
+}
+
+variable "registry_path" {
+  type = string
+  default = "registry.repo.proxy-dev-forge.asip.hst.fluxus.net/prosanteconnect"
 }
 
 variable "image" {

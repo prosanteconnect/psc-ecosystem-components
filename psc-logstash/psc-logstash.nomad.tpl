@@ -42,6 +42,9 @@ input {
 
 filter {
   grok {
+    break_on_match => "true"
+    match     => { "message" => "%%%{TIMESTAMP_ISO8601:timestamp}%%%{SPACE}%%%{LOGLEVEL:level}%%%{SPACE}\[%%%{DATA:emitter}\]%%%{SPACE}%%%{NOTSPACE:emitter_infos}%%%{SPACE}%%%{GREEDYDATA:message}" }
+    match     => { "message" => "%%%{DATE_EU:date}%%%{SPACE}%%%{TIME:time}%%%{SPACE}%%%{LOGLEVEL:level}%%%{SPACE}%%%{WORD:hostname}%%%{SPACE}\[%%%{DATA:connector}\]%%%{SPACE}(?<class>(?:\.?[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)%%%{SPACE}:%%%{SPACE}%%%{DATA:metric}%%%{SPACE}---%%%{SPACE}%%%{NUMBER:value:int}" }
     match     => { "message" => "%%%{DATE_EU:date}%%%{SPACE}%%%{TIME:time}%%%{SPACE}%%%{LOGLEVEL:level}%%%{SPACE}%%%{WORD:hostname}%%%{SPACE}\[%%%{DATA:connector}\]%%%{SPACE}(?<class>(?:\.?[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)%%%{SPACE}:%%%{SPACE}%%%{GREEDYDATA:message}" }
     overwrite => [ "message" ]
   }

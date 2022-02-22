@@ -72,7 +72,7 @@ job "psc-alertmanager" {
               <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <a href="https://{{ with secret "psc-ecosystem/prometheus" }}{{ .Data.data.public_hostname}}{{ end }}/psc-prometheus/graph"
+                    <a href="https://{{ with secret "psc-ecosystem/admin" }}{{ .Data.data.public_hostname}}{{ end }}/psc-prometheus/graph"
                        style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
                     color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer;
                     display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda;
@@ -150,12 +150,12 @@ inhibit_rules:
 receivers:
 - name: 'email-notifications'
   email_configs:
-  - to: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.receiver}}{{ end }}
-    from: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.sender}}{{ end }}
-    smarthost: {{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.smarthost}}{{ end }}
-    {{ with secret "psc-ecosystem/alertmanager" }}auth_username: {{ .Data.data.sender}}
-    auth_identity: {{ .Data.data.sender}}
-    auth_password: {{ .Data.data.auth_password }}{{ end }}
+  - to: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_receiver}}{{ end }}
+    from: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_username}}{{ end }}
+    smarthost: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_server_host}}:{{ .Data.data.mail_server_port}}{{ end }}
+    {{ with secret "psc-ecosystem/admin" }}auth_username: {{ .Data.data.mail_username}}
+    auth_identity: {{ .Data.data.mail_username}}
+    auth_password: {{ .Data.data.mail_password }}{{ end }}
     send_resolved: true
     require_tls: false
     html : {{ `'{{ template "email.custom.html" . }}'` }}
@@ -169,7 +169,7 @@ EOH
         destination = "local/file.env"
         env = true
         data = <<EOF
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/alertmanager" }}{{ .Data.data.public_hostname }}{{ end }}
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
 EOF
       }
 
