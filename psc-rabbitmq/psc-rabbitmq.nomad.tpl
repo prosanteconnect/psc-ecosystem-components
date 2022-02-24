@@ -237,6 +237,17 @@ EOF
           port         = "endpoint"
         }
       }
+	  service {
+        name = "$\u007BNOMAD_JOB_NAME\u007D-metrics"
+        port = "metrics"
+        check {
+          name         = "alive"
+          type         = "tcp"
+          interval     = "10s"
+          timeout      = "2s"
+          port         = "metrics"
+        }
+      }
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D-management"
         port = "management"
