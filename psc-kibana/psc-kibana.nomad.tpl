@@ -6,7 +6,7 @@ job "kibana" {
     change_mode = "restart"
   }
   affinity {
-    attribute = "$\uu07Bnode.class\u007D"
+    attribute = "$\u007Bnode.class\u007D"
     value = "standard"
   }
   group "kibana" {
