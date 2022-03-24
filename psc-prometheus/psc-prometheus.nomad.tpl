@@ -126,6 +126,12 @@ groups:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
+  - alert: pscload-critical-ps-update-size
+    expr: sum(ps_metric{operation="update"}) > scalar(ps_metric{operation="reference"}*5/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes updates > {{`{{$value}}`}}
 
   - alert: pscload-continue
     expr: pscload_stage == 50
