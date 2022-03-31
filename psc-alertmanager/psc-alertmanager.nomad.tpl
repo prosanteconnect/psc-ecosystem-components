@@ -155,7 +155,7 @@ receivers:
     smarthost: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_server_host}}:{{ .Data.data.mail_server_port}}{{ end }}
     {{ with secret "psc-ecosystem/admin" }}auth_username: {{ .Data.data.mail_username}}
     auth_identity: {{ .Data.data.mail_username}}
-    auth_password: {{ .Data.data.mail_password }}{{ end }}
+    auth_password: {{ .Data.data.alert_manager_key }}{{ end }}
     send_resolved: true
     require_tls: false
     html : {{ `'{{ template "email.custom.html" . }}'` }}
