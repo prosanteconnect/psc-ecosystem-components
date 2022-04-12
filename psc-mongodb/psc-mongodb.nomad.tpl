@@ -52,8 +52,8 @@ job "psc-mongodb" {
         volume_driver = "pxd"
       }
       resources {
-        cpu    = 2000
-        memory = 6044
+        cpu    = 500
+        memory = 2048
       }
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
