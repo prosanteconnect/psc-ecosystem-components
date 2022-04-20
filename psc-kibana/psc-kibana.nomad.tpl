@@ -6,6 +6,10 @@ job "kibana" {
     policies = ["psc-ecosystem"]
     change_mode = "restart"
   }
+  affinity {
+    attribute = "$\u007Bnode.class\u007D"
+    value = "standard"
+  }
   group "kibana" {
     update {
       stagger = "10s"

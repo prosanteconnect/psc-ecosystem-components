@@ -39,13 +39,14 @@ job "psc-rabbitmq" {
     network {
       port "endpoint" { to = 5672 }
       port "management" { to = 15672 }
+	  port "metrics" { to = 15692 }
     }
 
     task "psc-rabbitmq" {
       driver = "docker"
       config {
         image = "${image}:${tag}"
-        ports = ["endpoint","management"]
+        ports = ["endpoint","management","metrics"]
         hostname = "psc-rabbitmq"
         mount {
           type = "volume"
@@ -234,6 +235,17 @@ EOF
           interval     = "10s"
           timeout      = "2s"
           port         = "endpoint"
+        }
+      }
+	  service {
+        name = "$\u007BNOMAD_JOB_NAME\u007D-metrics"
+        port = "metrics"
+        check {
+          name         = "alive"
+          type         = "tcp"
+          interval     = "10s"
+          timeout      = "2s"
+          port         = "metrics"
         }
       }
       service {

@@ -77,6 +77,12 @@ scrape_configs:
     static_configs:
     - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
 
+  - job_name: 'rabbitmq'
+    metrics_path: '/metrics/per-object'
+    scrape_interval: 15s
+    static_configs:
+    - targets: ['{{ range service "psc-rabbitmq-metrics" }}{{ .Address }}:{{ .Port }}{{ end }}']
+
 alerting:
   alertmanagers:
   - static_configs:
@@ -120,6 +126,12 @@ groups:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
+  - alert: pscload-critical-ps-update-size
+    expr: sum(ps_metric{operation="update"}) > scalar(ps_metric{operation="reference"}*5/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes updates > {{`{{$value}}`}}
 
   - alert: pscload-continue
     expr: pscload_stage == 50
