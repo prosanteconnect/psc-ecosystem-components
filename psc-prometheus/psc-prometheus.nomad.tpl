@@ -102,6 +102,9 @@ EOH
 groups:
 - name: pscload
   rules:
+# DELETING RULES
+#
+#
   - alert: pscload-critical-adeli-delete-size
     expr: ps_metric{idType="ADELI",operation="delete"} > scalar(ps_metric{idType="ADELI",operation="reference"}/100)
     labels:
@@ -126,8 +129,29 @@ groups:
       severity: critical
     annotations:
       summary: Total changes creations > {{`{{$value}}`}}
-  - alert: pscload-critical-ps-update-size
-    expr: sum(ps_metric{operation="update"}) > scalar(ps_metric{operation="reference"}*5/100)
+# UPDATING RULES
+#
+#
+  - alert: pscload-critical-adeli-update-size
+    expr: sum(ps_metric{idType="ADELI",operation="update"}) > scalar(ps_metric{idType="ADELI",operation="reference"}*5/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes updates > {{`{{$value}}`}}
+  - alert: pscload-critical-finess-update-size
+    expr: sum(ps_metric{idType="FINESS",operation="update"}) > scalar(ps_metric{idType="FINESS",operation="reference"}*5/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes updates > {{`{{$value}}`}}
+  - alert: pscload-critical-siret-update-size
+    expr: sum(ps_metric{idType="SIRET",operation="update"}) > scalar(ps_metric{idType="SIRET",operation="reference"}*5/100)
+    labels:
+      severity: critical
+    annotations:
+      summary: Total changes updates > {{`{{$value}}`}}
+  - alert: pscload-critical-rpps-update-size
+    expr: sum(ps_metric{idType="RPPS",operation="update"}) > scalar(ps_metric{idType="RPPS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
