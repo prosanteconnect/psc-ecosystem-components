@@ -25,9 +25,9 @@ job "psc-prometheus" {
       }
     }
 
-    constraint {
+    affinity {
       attribute = "$\u007Bnode.class\u007D"
-      value     = "data"
+      value     = "standard"
     }
 
     ephemeral_disk {
@@ -39,15 +39,6 @@ job "psc-prometheus" {
 
       config {
         image = "${image}:${tag}"
-        mount {
-          type = "bind"
-          target = "/etc/prometheus"
-          source = "local"
-          readonly = false
-          bind_options {
-            propagation = "rshared"
-          }
-        }
         args = [
           "--config.file=/etc/prometheus/prometheus.yml",
           "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
