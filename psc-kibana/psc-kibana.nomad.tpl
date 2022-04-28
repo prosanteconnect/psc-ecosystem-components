@@ -1,5 +1,5 @@
 job "kibana" {
-  namespace = "platform-tools"
+  #namespace = "platform-tools"
   datacenters = ["${datacenter}"]
   type = "service"
   vault {
