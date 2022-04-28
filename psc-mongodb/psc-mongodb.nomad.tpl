@@ -68,29 +68,5 @@ job "psc-mongodb" {
         }
       }
     }
-
-    task "log-shipper" {
-      driver = "docker"
-      restart {
-        interval = "30m"
-        attempts = 5
-        delay    = "15s"
-        mode     = "delay"
-      }
-      meta {
-        INSTANCE = "$\u007BNOMAD_ALLOC_NAME\u007D"
-      }
-      template {
-        data = <<EOH
-LOGSTASH_HOST = {{ range service "logstash" }}{{ .Address }}:{{ .Port }}{{ end }}
-ENVIRONMENT = "${datacenter}"
-EOH
-        destination = "local/file.env"
-        env = true
-      }
-      config {
-        image = "${registry_path}/filebeat:7.14.2"
-      }
-    }
   }
 }
