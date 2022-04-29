@@ -42,7 +42,7 @@ job "psc-prometheus" {
       config {
         image = "${image}:${tag}"
         args = [
-          "--config.file=/etc/prometheus/prometheus.yml",
+          "--config.file=/local/prometheus.yml",
           "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
           "--web.route-prefix=/psc-prometheus",
           "--storage.tsdb.path=/alloc/data/",
@@ -87,7 +87,7 @@ alerting:
       - '{{ range service "psc-alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
 
 rule_files:
-  - /etc/prometheus/rules.yml
+  - /local/rules.yml
 
 EOH
       }
