@@ -31,7 +31,9 @@ job "psc-prometheus" {
     }
 
     ephemeral_disk {
-      size = 300
+      migrate = true
+      size    = 500
+      sticky  = true
     }
 
     task "psc-prometheus" {
@@ -43,6 +45,7 @@ job "psc-prometheus" {
           "--config.file=/etc/prometheus/prometheus.yml",
           "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
           "--web.route-prefix=/psc-prometheus",
+          "--storage.tsdb.path=/alloc/data/",
           "--storage.tsdb.retention.time=30d",
           "--log.level=debug"
         ]
