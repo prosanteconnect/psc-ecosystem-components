@@ -43,7 +43,8 @@ job "psc-prometheus" {
           "--config.file=/etc/prometheus/prometheus.yml",
           "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
           "--web.route-prefix=/psc-prometheus",
-          "--storage.tsdb.retention.time=30d"
+          "--storage.tsdb.retention.time=30d",
+          "--log.level=debug"
         ]
         ports = [
           "ui"
