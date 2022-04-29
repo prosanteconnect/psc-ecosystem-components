@@ -47,6 +47,7 @@ job "psc-prometheus" {
           "--web.route-prefix=/psc-prometheus",
           "--storage.tsdb.path=/alloc/data/",
           "--storage.tsdb.retention.time=30d",
+          "--web.listen-address=0.0.0.0:9090",
           "--log.level=debug"
         ]
         ports = [
