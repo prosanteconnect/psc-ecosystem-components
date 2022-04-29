@@ -67,12 +67,13 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
     - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
-
+{{ range service "psc-rabbitmq-metrics" }}
   - job_name: 'rabbitmq'
     metrics_path: '/metrics/per-object'
     scrape_interval: 15s
     static_configs:
-    - targets: ['{{ range service "psc-rabbitmq-metrics" }}{{ .Address }}:{{ .Port }}{{ end }}']
+    - targets: ['{{ .Address }}:{{ .Port }}']
+{{ end }}    
 
 alerting:
   alertmanagers:
