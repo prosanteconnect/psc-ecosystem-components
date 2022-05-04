@@ -157,7 +157,7 @@ receivers:
     auth_identity: {{ .Data.data.mail_username}}
     auth_password: {{ .Data.data.alert_manager_key }}{{ end }}
     send_resolved: true
-    require_tls: false
+    require_tls: true
     html : {{ `'{{ template "email.custom.html" . }}'` }}
 - name: 'pscload-webhook'
 {{ range service "webhooker" }}  webhook_configs:
