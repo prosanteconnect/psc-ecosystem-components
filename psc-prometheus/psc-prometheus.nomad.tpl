@@ -25,13 +25,15 @@ job "psc-prometheus" {
       }
     }
 
-    constraint {
+    affinity {
       attribute = "$\u007Bnode.class\u007D"
-      value     = "data"
+      value     = "standard"
     }
 
     ephemeral_disk {
-      size = 300
+      migrate = true
+      size    = 500
+      sticky  = true
     }
 
     task "psc-prometheus" {
@@ -39,20 +41,14 @@ job "psc-prometheus" {
 
       config {
         image = "${image}:${tag}"
-        mount {
-          type = "bind"
-          target = "/etc/prometheus"
-          source = "local"
-          readonly = false
-          bind_options {
-            propagation = "rshared"
-          }
-        }
         args = [
-          "--config.file=/etc/prometheus/prometheus.yml",
+          "--config.file=/local/prometheus.yml",
           "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
           "--web.route-prefix=/psc-prometheus",
-          "--storage.tsdb.retention.time=30d"
+          "--storage.tsdb.path=/alloc/data/",
+          "--storage.tsdb.retention.time=30d",
+          "--web.listen-address=0.0.0.0:9090",
+          "--log.level=debug"
         ]
         ports = [
           "ui"
@@ -76,12 +72,13 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
     - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
-
+{{ range service "psc-rabbitmq-metrics" }}
   - job_name: 'rabbitmq'
     metrics_path: '/metrics/per-object'
     scrape_interval: 15s
     static_configs:
-    - targets: ['{{ range service "psc-rabbitmq-metrics" }}{{ .Address }}:{{ .Port }}{{ end }}']
+    - targets: ['{{ .Address }}:{{ .Port }}']
+{{ end }}    
 
 alerting:
   alertmanagers:
@@ -90,7 +87,7 @@ alerting:
       - '{{ range service "psc-alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
 
 rule_files:
-  - /etc/prometheus/rules.yml
+  - /local/rules.yml
 
 EOH
       }
@@ -102,36 +99,60 @@ EOH
 groups:
 - name: pscload
   rules:
+# DELETING RULES
+#
+#
   - alert: pscload-critical-adeli-delete-size
     expr: ps_metric{idType="ADELI",operation="delete"} > scalar(ps_metric{idType="ADELI",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      summary: Total changes creations > {{`{{$value}}`}}
+      Total ADELI delete: {{`{{$value}}`}}
   - alert: pscload-critical-finess-delete-size
     expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      summary: Total changes creations > {{`{{$value}}`}}
+      Total FINESS delete: {{`{{$value}}`}}
   - alert: pscload-critical-siret-delete-size
     expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      summary: Total changes creations > {{`{{$value}}`}}
+      Total SIRET delete: {{`{{$value}}`}}
   - alert: pscload-critical-rpps-delete-size
     expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      summary: Total changes creations > {{`{{$value}}`}}
-  - alert: pscload-critical-ps-update-size
-    expr: sum(ps_metric{operation="update"}) > scalar(ps_metric{operation="reference"}*5/100)
+      Total RPPS delete: {{`{{$value}}`}}
+# UPDATING RULES
+#
+#
+  - alert: pscload-critical-adeli-update-size
+    expr: sum(ps_metric{idType="ADELI",operation="update"}) > scalar(ps_metric{idType="ADELI",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      summary: Total changes updates > {{`{{$value}}`}}
+      Total ADELI updates: {{`{{$value}}`}}
+  - alert: pscload-critical-finess-update-size
+    expr: sum(ps_metric{idType="FINESS",operation="update"}) > scalar(ps_metric{idType="FINESS",operation="reference"}*5/100)
+    labels:
+      severity: critical
+    annotations:
+      Total FINESS updates: {{`{{$value}}`}}
+  - alert: pscload-critical-siret-update-size
+    expr: sum(ps_metric{idType="SIRET",operation="update"}) > scalar(ps_metric{idType="SIRET",operation="reference"}*5/100)
+    labels:
+      severity: critical
+    annotations:
+      Total SIRET updates: {{`{{$value}}`}}
+  - alert: pscload-critical-rpps-update-size
+    expr: sum(ps_metric{idType="RPPS",operation="update"}) > scalar(ps_metric{idType="RPPS",operation="reference"}*5/100)
+    labels:
+      severity: critical
+    annotations:
+      Total RPPS updates: {{`{{$value}}`}}
 
   - alert: pscload-continue
     expr: pscload_stage == 50

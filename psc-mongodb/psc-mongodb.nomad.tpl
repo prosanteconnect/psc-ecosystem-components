@@ -53,7 +53,7 @@ job "psc-mongodb" {
       }
       resources {
         cpu    = 500
-        memory = 2048
+        memory = 1536
       }
       service {
         name = "$\u007BNOMAD_JOB_NAME\u007D"
