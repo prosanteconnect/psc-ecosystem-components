@@ -25,13 +25,15 @@ job "psc-prometheus" {
       }
     }
 
-    constraint {
+    affinity {
       attribute = "$\u007Bnode.class\u007D"
-      value     = "data"
+      value     = "standard"
     }
 
     ephemeral_disk {
-      size = 300
+      migrate = true
+      size    = 500
+      sticky  = true
     }
 
     task "psc-prometheus" {
@@ -39,20 +41,14 @@ job "psc-prometheus" {
 
       config {
         image = "${image}:${tag}"
-        mount {
-          type = "bind"
-          target = "/etc/prometheus"
-          source = "local"
-          readonly = false
-          bind_options {
-            propagation = "rshared"
-          }
-        }
         args = [
-          "--config.file=/etc/prometheus/prometheus.yml",
+          "--config.file=/local/prometheus.yml",
           "--web.external-url=https://$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/",
           "--web.route-prefix=/psc-prometheus",
-          "--storage.tsdb.retention.time=30d"
+          "--storage.tsdb.path=/alloc/data/",
+          "--storage.tsdb.retention.time=30d",
+          "--web.listen-address=0.0.0.0:9090",
+          "--log.level=debug"
         ]
         ports = [
           "ui"
@@ -76,12 +72,13 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
     - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
-
+{{ range service "psc-rabbitmq-metrics" }}
   - job_name: 'rabbitmq'
     metrics_path: '/metrics/per-object'
     scrape_interval: 15s
     static_configs:
-    - targets: ['{{ range service "psc-rabbitmq-metrics" }}{{ .Address }}:{{ .Port }}{{ end }}']
+    - targets: ['{{ .Address }}:{{ .Port }}']
+{{ end }}    
 
 alerting:
   alertmanagers:
@@ -90,7 +87,7 @@ alerting:
       - '{{ range service "psc-alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
 
 rule_files:
-  - /etc/prometheus/rules.yml
+  - /local/rules.yml
 
 EOH
       }
