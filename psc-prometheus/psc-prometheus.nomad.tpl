@@ -107,29 +107,25 @@ groups:
     labels:
       severity: critical
     annotations:
-      summary: Total ADELI delete
-      description: {{`{{$value}}`}}
+      summary: Total ADELI delete = {{`{{$value}}`}}
   - alert: pscload-critical-finess-delete-size
     expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      summary: Total FINESS delete
-      description: {{`{{$value}}`}}
+      summary: Total FINESS delete = {{`{{$value}}`}}
   - alert: pscload-critical-siret-delete-size
     expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      summary: Total SIRET delete
-      description: {{`{{$value}}`}}
+      summary: Total SIRET delete = {{`{{$value}}`}}
   - alert: pscload-critical-rpps-delete-size
     expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      summary: Total RPPS delete
-      description: {{`{{$value}}`}}
+      summary: Total RPPS delete = {{`{{$value}}`}}
 # UPDATING RULES
 #
 #
@@ -138,29 +134,25 @@ groups:
     labels:
       severity: critical
     annotations:
-      summary: Total ADELI updates
-      description: {{`{{$value}}`}}
+      summary: Total ADELI updates = {{`{{$value}}`}}
   - alert: pscload-critical-finess-update-size
     expr: sum(ps_metric{idType="FINESS",operation="update"}) > scalar(ps_metric{idType="FINESS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      summary: Total FINESS updates
-      description: {{`{{$value}}`}}
+      summary: Total FINESS updates = {{`{{$value}}`}}
   - alert: pscload-critical-siret-update-size
     expr: sum(ps_metric{idType="SIRET",operation="update"}) > scalar(ps_metric{idType="SIRET",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      summary: Total SIRET updates
-      description: {{`{{$value}}`}}
+      summary: Total SIRET updates = {{`{{$value}}`}}
   - alert: pscload-critical-rpps-update-size
     expr: sum(ps_metric{idType="RPPS",operation="update"}) > scalar(ps_metric{idType="RPPS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      summary: Total RPPS updates
-      description: {{`{{$value}}`}}
+      summary: Total RPPS updates = {{`{{$value}}`}}
 
   - alert: pscload-continue
     expr: pscload_stage == 50

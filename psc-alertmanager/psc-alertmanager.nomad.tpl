@@ -85,7 +85,7 @@ job "psc-alertmanager" {
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
                     {{ `{{ if gt (len .Annotations) 0 }}` }}<strong style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0 0 20px;">Annotations</strong>
                     <br style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;" />{{ `{{ end }}` }}
-                    {{ `{{ range .Annotations.SortedPairs }}` }}{{ `{{ .Name }}` }} = {{ `{{ .Value }}` }}
+                    {{ `{{ range .Annotations.SortedPairs }}` }}{{ `{{ .Value }}` }}
                     <br style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;" />{{ `{{ end }}` }}
                   </td>
                 </tr>
