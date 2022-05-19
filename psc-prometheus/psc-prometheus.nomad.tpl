@@ -107,25 +107,25 @@ groups:
     labels:
       severity: critical
     annotations:
-      Total ADELI delete: {{`{{$value}}`}}
+      Total_ADELI_delete: {{`{{$value}}`}}
   - alert: pscload-critical-finess-delete-size
     expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total FINESS delete: {{`{{$value}}`}}
+      Total_FINESS_delete: {{`{{$value}}`}}
   - alert: pscload-critical-siret-delete-size
     expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total SIRET delete: {{`{{$value}}`}}
+      Total_SIRET_delete: {{`{{$value}}`}}
   - alert: pscload-critical-rpps-delete-size
     expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total RPPS delete: {{`{{$value}}`}}
+      Total_RPPS_delete: {{`{{$value}}`}}
 # UPDATING RULES
 #
 #
@@ -134,25 +134,25 @@ groups:
     labels:
       severity: critical
     annotations:
-      Total ADELI updates: {{`{{$value}}`}}
+      Total_ADELI_updates: {{`{{$value}}`}}
   - alert: pscload-critical-finess-update-size
     expr: sum(ps_metric{idType="FINESS",operation="update"}) > scalar(ps_metric{idType="FINESS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total FINESS updates: {{`{{$value}}`}}
+      Total_FINESS_updates: {{`{{$value}}`}}
   - alert: pscload-critical-siret-update-size
     expr: sum(ps_metric{idType="SIRET",operation="update"}) > scalar(ps_metric{idType="SIRET",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total SIRET updates: {{`{{$value}}`}}
+      Total_SIRET_updates: {{`{{$value}}`}}
   - alert: pscload-critical-rpps-update-size
     expr: sum(ps_metric{idType="RPPS",operation="update"}) > scalar(ps_metric{idType="RPPS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total RPPS updates: {{`{{$value}}`}}
+      Total_RPPS_updates: {{`{{$value}}`}}
 
   - alert: pscload-continue
     expr: pscload_stage == 50
