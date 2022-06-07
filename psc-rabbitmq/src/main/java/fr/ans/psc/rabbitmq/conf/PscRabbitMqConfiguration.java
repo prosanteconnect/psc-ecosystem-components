@@ -126,8 +126,8 @@ public class PscRabbitMqConfiguration {
      * @return the fanout exchange
      */
     @Bean
-    FanoutExchange deadLetterExchange() {
-        return new FanoutExchange(DLX_EXCHANGE_MESSAGES);
+    DirectExchange deadLetterExchange() {
+        return new DirectExchange(DLX_EXCHANGE_MESSAGES);
     }
 
     /**
@@ -147,7 +147,7 @@ public class PscRabbitMqConfiguration {
      */
     @Bean
     Binding deadLetterPsCreateBinding() {
-        return BindingBuilder.bind(deadLetterPsCreateQueue()).to(deadLetterExchange());
+        return BindingBuilder.bind(deadLetterPsCreateQueue()).to(deadLetterExchange()).with(PS_CREATE_MESSAGES_QUEUE_ROUTING_KEY);
     }
 
     /**
@@ -167,7 +167,7 @@ public class PscRabbitMqConfiguration {
      */
     @Bean
     Binding deadLetterPsUpdateBinding() {
-        return BindingBuilder.bind(deadLetterPsUpdateQueue()).to(deadLetterExchange());
+        return BindingBuilder.bind(deadLetterPsUpdateQueue()).to(deadLetterExchange()).with(PS_UPDATE_MESSAGES_QUEUE_ROUTING_KEY);
     }
 
     /**
@@ -187,6 +187,6 @@ public class PscRabbitMqConfiguration {
      */
     @Bean
     Binding deadLetterPsDeleteBinding() {
-        return BindingBuilder.bind(deadLetterPsDeleteQueue()).to(deadLetterExchange());
+        return BindingBuilder.bind(deadLetterPsDeleteQueue()).to(deadLetterExchange()).with(PS_DELETE_MESSAGES_QUEUE_ROUTING_KEY);
     }
 }
