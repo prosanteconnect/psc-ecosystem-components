@@ -51,9 +51,7 @@ public class PscRabbitMqConfiguration {
      */
     @Bean
     Queue psCreateMessagesQueue() {
-        return QueueBuilder.durable(QUEUE_PS_CREATE_MESSAGES)
-                .withArgument("x-dead-letter-exchange", DLX_EXCHANGE_MESSAGES)
-                .build();
+        return QueueBuilder.durable(QUEUE_PS_CREATE_MESSAGES).build();
     }
 
     /**
@@ -63,9 +61,7 @@ public class PscRabbitMqConfiguration {
      */
     @Bean
     Queue psUpdateMessagesQueue() {
-        return QueueBuilder.durable(QUEUE_PS_UPDATE_MESSAGES)
-                .withArgument("x-dead-letter-exchange", DLX_EXCHANGE_MESSAGES)
-                .build();
+        return QueueBuilder.durable(QUEUE_PS_UPDATE_MESSAGES).build();
     }
 
     /**
@@ -75,9 +71,7 @@ public class PscRabbitMqConfiguration {
      */
     @Bean
     Queue psDeleteMessagesQueue() {
-        return QueueBuilder.durable(QUEUE_PS_DELETE_MESSAGES)
-                .withArgument("x-dead-letter-exchange", DLX_EXCHANGE_MESSAGES)
-                .build();
+        return QueueBuilder.durable(QUEUE_PS_DELETE_MESSAGES).build();
     }
 
     /**
