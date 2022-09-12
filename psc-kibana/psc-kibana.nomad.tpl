@@ -1,7 +1,8 @@
 job "kibana" {
-  #namespace = "platform-tools"
+  namespace = "${nomad_namespace}"
   datacenters = ["${datacenter}"]
   type = "service"
+  
   vault {
     policies = ["psc-ecosystem"]
     change_mode = "restart"
@@ -31,9 +32,9 @@ job "kibana" {
                data = <<EOH
 server.name: kibana
 server.basePath: "/kibana"
-server.publicBaseUrl: "https://{{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}/kibana"
+server.publicBaseUrl: "https://{{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}/kibana"
 server.rewriteBasePath: true
-{{range service "elasticsearch" }}elasticsearch.hosts: [ "http://{{.Address}}:{{.Port}}" ]{{end}}
+{{range service "${nomad_namespace}-elasticsearch" }}elasticsearch.hosts: [ "http://{{.Address}}:{{.Port}}" ]{{end}}
 server.host: "0.0.0.0"
 xpack.monitoring.ui.container.elasticsearch.enabled: false
 
@@ -59,7 +60,7 @@ EOH
         memory  = 1024
       } #resources
       service {
-        name = "kibana"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-kibana"
         tags = [ "urlprefix-/kibana/" ]
         port = "healthcheck"
         check {
