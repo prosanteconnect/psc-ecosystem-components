@@ -108,25 +108,25 @@ groups:
     labels:
       severity: critical
     annotations:
-      Total ADELI delete: {{`{{$value}}`}}
+      Total ADELI delete: 
   - alert: pscload-critical-finess-delete-size
     expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total FINESS delete: {{`{{$value}}`}}
+      Total FINESS delete: 
   - alert: pscload-critical-siret-delete-size
     expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total SIRET delete: {{`{{$value}}`}}
+      Total SIRET delete: 
   - alert: pscload-critical-rpps-delete-size
     expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total RPPS delete: {{`{{$value}}`}}
+      Total RPPS delete: 
 # UPDATING RULES
 #
 #
@@ -135,25 +135,25 @@ groups:
     labels:
       severity: critical
     annotations:
-      Total ADELI updates: {{`{{$value}}`}}
+      Total ADELI updates: 
   - alert: pscload-critical-finess-update-size
     expr: sum(ps_metric{idType="FINESS",operation="update"}) > scalar(ps_metric{idType="FINESS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total FINESS updates: {{`{{$value}}`}}
+      Total FINESS updates: 
   - alert: pscload-critical-siret-update-size
     expr: sum(ps_metric{idType="SIRET",operation="update"}) > scalar(ps_metric{idType="SIRET",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total SIRET updates: {{`{{$value}}`}}
+      Total SIRET updates: 
   - alert: pscload-critical-rpps-update-size
     expr: sum(ps_metric{idType="RPPS",operation="update"}) > scalar(ps_metric{idType="RPPS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total RPPS updates: {{`{{$value}}`}}
+      Total RPPS updates:
 
   - alert: pscload-continue
     expr: pscload_stage == 50
@@ -176,7 +176,7 @@ EOF
       service {
         name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         tags = [
-          "urlprefix-/psc-prometheus/${workspace.name}/"]
+          "urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/${workspace.name}/"]
         port = "ui"
 
         check {
