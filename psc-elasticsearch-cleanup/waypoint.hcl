@@ -10,7 +10,7 @@ runner {
     url = "https://github.com/prosanteconnect/psc-ecosystem-components.git"
     path = "psc-elasticsearch-cleanup"
     ignore_changes_outside_path = true
-    ref = ${workspace.name}
+    ref = "${workspace.name}"
   }
   poll {
     enabled = false
