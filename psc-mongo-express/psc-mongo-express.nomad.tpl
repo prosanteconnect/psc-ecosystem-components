@@ -1,6 +1,7 @@
 job "psc-mongo-express" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   vault {
     policies = ["psc-ecosystem"]
@@ -31,10 +32,10 @@ job "psc-mongo-express" {
       driver = "docker"
       template {
         data = <<EOH
-ME_CONFIG_MONGODB_SERVER = {{ range service "psc-mongodb" }}{{ .Address }}{{ end }}
-ME_CONFIG_MONGODB_PORT = {{ range service "psc-mongodb" }}{{ .Port }}{{ end }}
-ME_CONFIG_MONGODB_ADMINUSERNAME = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_user }}{{ end }}
-ME_CONFIG_MONGODB_ADMINPASSWORD = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
+ME_CONFIG_MONGODB_SERVER = {{ range service "${nomad_namespace}-psc-mongodb" }}{{ .Address }}{{ end }}
+ME_CONFIG_MONGODB_PORT = {{ range service "${nomad_namespace}-psc-mongodb" }}{{ .Port }}{{ end }}
+ME_CONFIG_MONGODB_ADMINUSERNAME = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.root_user }}{{ end }}
+ME_CONFIG_MONGODB_ADMINPASSWORD = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
 ME_CONFIG_SITE_BASEURL = "/psc-db/"
 EOH
         destination = "secrets/file.env"
@@ -46,7 +47,7 @@ EOH
         destination = "local/file.env"
         env = true
         data = <<EOF
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
 EOF
       }
       config {
@@ -58,7 +59,7 @@ EOF
         memory = 512
       }
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         port = "ui"
         tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-db/"]
         check {
