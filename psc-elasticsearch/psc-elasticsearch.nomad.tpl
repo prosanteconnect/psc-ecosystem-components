@@ -1,8 +1,8 @@
 job "elasticsearch" {
 
   type = "service"
-
   datacenters = ["${datacenter}"]
+  namespace = "${nomad_namespace}"
 
   update {
     stagger = "30s"
@@ -26,7 +26,7 @@ job "elasticsearch" {
         image = "${image}:${tag}"
         ports = ["es", "ed"]
         volumes = [
-          "name=elasticsearch,io_priority=high,size=20,repl=2:/usr/share/elasticsearch/data"
+          "name=${nomad_namespace}-elasticsearch,io_priority=high,size=20,repl=2:/usr/share/elasticsearch/data"
         ]
         volume_driver = "pxd"
       }
@@ -41,7 +41,7 @@ job "elasticsearch" {
       }
 
       service {
-        name = "elasticsearch"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-elasticsearch"
         tags = ["global","elasticsearch"]
         port = "es"
         check {
