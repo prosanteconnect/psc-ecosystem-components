@@ -1,6 +1,7 @@
 job "psc-prometheus" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   vault {
     policies = ["psc-ecosystem"]
@@ -71,8 +72,8 @@ scrape_configs:
     metrics_path: '/pscload/v2/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-    - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
-{{ range service "psc-rabbitmq-metrics" }}
+    - targets: ['{{ range service "${nomad_namespace}-pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
+{{ range service "${nomad_namespace}-psc-rabbitmq-metrics" }}
   - job_name: 'rabbitmq'
     metrics_path: '/metrics/per-object'
     scrape_interval: 15s
@@ -84,7 +85,7 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-      - '{{ range service "psc-alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
+      - '{{ range service "${nomad_namespace}-psc-alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
 
 rule_files:
   - /local/rules.yml
@@ -168,14 +169,14 @@ EOH
         destination = "local/file.env"
         env = true
         data = <<EOF
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
 EOF
       }
 
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         tags = [
-          "urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus"]
+          "urlprefix-/psc-prometheus/${workspace.name}/"]
         port = "ui"
 
         check {
