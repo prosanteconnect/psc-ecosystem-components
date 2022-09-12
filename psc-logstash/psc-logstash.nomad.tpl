@@ -1,8 +1,8 @@
 job "logstash" {
 
   type = "service"
-
   datacenters = ["${datacenter}"]
+  namespace = "${nomad_namespace}"
 
   update {
     stagger = "30s"
@@ -27,7 +27,7 @@ job "logstash" {
       template {
                data =  <<EOH
 HTTP_HOST="0.0.0.0"
-{{range service "elasticsearch" }}XPACK_MONITORING_ELASTICSEARCH_HOSTS=[ "http://{{.Address}}:{{.Port}}" ]{{end}}
+{{range service "${nomad_namespace}-elasticsearch" }}XPACK_MONITORING_ELASTICSEARCH_HOSTS=[ "http://{{.Address}}:{{.Port}}" ]{{end}}
 EOH
                 destination = "secrets/file.env"
                 env = true
@@ -77,7 +77,7 @@ EOH
       }
 
       service {
-        name = "logstash"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-logstash"
         port = "logstash"
         check {
           name = "alive"
