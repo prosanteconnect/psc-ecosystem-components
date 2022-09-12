@@ -59,6 +59,16 @@ EOH
       resources {
         memory  = 1024
       } #resources
+      
+      template {
+        change_mode = "restart"
+        destination = "local/file.env"
+        env = true
+        data = <<EOF
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+EOF
+      }
+      
       service {
         name = "$\u007BNOMAD_NAMESPACE\u007D-kibana"
         tags = [ "urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/kibana/" ]
