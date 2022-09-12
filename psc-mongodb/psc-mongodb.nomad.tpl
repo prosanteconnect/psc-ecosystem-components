@@ -1,6 +1,7 @@
 job "psc-mongodb" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   vault {
     policies = ["psc-ecosystem"]
@@ -37,8 +38,8 @@ job "psc-mongodb" {
       driver = "docker"
       template {
         data = <<EOH
-          MONGO_INITDB_ROOT_USERNAME = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_user }}{{ end }}
-          MONGO_INITDB_ROOT_PASSWORD = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
+          MONGO_INITDB_ROOT_USERNAME = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.root_user }}{{ end }}
+          MONGO_INITDB_ROOT_PASSWORD = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
         EOH
         destination = "secrets/.env"
         change_mode = "restart"
@@ -47,8 +48,8 @@ job "psc-mongodb" {
       config {
         image = "${image}:${tag}"
         ports = ["db"]
-        volumes = ["name=psc-mongodb,fs=xfs,io_priority=high,size=8,repl=2:/data/db",
-          "name=psc-mongodb-config, fs=xfs, io_priority=high, size=1, repl=2:/data/configdb"]
+        volumes = ["name=$\u007BNOMAD_NAMESPACE\u007D-psc-mongodb,fs=xfs,io_priority=high,size=8,repl=2:/data/db",
+          "name=$\u007BNOMAD_NAMESPACE\u007D-psc-mongodb-config, fs=xfs, io_priority=high, size=1, repl=2:/data/configdb"]
         volume_driver = "pxd"
       }
       resources {
@@ -56,7 +57,7 @@ job "psc-mongodb" {
         memory = 1536
       }
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         port = "db"
         check {
           name         = "alive"
