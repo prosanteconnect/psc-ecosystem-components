@@ -108,7 +108,7 @@ groups:
     labels:
       severity: critical
     annotations:
-      Total ADELI delete: "value"
+      "Total ADELI delete": "value"
   - alert: pscload-critical-finess-delete-size
     expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="reference"}/100)
     labels:
