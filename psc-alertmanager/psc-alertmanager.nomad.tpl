@@ -1,6 +1,7 @@
 job "psc-alertmanager" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   vault {
     policies = ["psc-ecosystem"]
@@ -150,10 +151,10 @@ inhibit_rules:
 receivers:
 - name: 'email-notifications'
   email_configs:
-  - to: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_receiver}}{{ end }}
-    from: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_username}}{{ end }}
-    smarthost: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_server_host}}:{{ .Data.data.mail_server_port}}{{ end }}
-    {{ with secret "psc-ecosystem/admin" }}auth_username: {{ .Data.data.mail_username}}
+  - to: {{ with secret "psc-ecosystem/${nomad.namespace}/admin" }}{{ .Data.data.mail_receiver}}{{ end }}
+    from: {{ with secret "psc-ecosystem/${nomad.namespace}/admin" }}{{ .Data.data.mail_username}}{{ end }}
+    smarthost: {{ with secret "psc-ecosystem/${nomad.namespace}/admin" }}{{ .Data.data.mail_server_host}}:{{ .Data.data.mail_server_port}}{{ end }}
+    {{ with secret "psc-ecosystem/${nomad.namespace}/admin" }}auth_username: {{ .Data.data.mail_username}}
     auth_identity: {{ .Data.data.mail_username}}
     auth_password: {{ .Data.data.alert_manager_key }}{{ end }}
     send_resolved: true
@@ -169,12 +170,12 @@ EOH
         destination = "local/file.env"
         env = true
         data = <<EOF
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad.namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
 EOF
       }
 
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-alertmanager strip=/psc-alertmanager"]
         port = "alertmanager_ui"
         check {
