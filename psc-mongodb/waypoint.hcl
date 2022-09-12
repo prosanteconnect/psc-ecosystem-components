@@ -1,4 +1,4 @@
-project = "prosanteconnect/psc-ecosystem-components/psc-mongodb"
+project = "prosanteconnect/${workspace.name}/psc-ecosystem-components/psc-mongodb"
 
 # Labels can be specified for organizational purposes.
 labels = { "domaine" = "psc" }
