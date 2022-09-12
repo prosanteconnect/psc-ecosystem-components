@@ -61,7 +61,7 @@ EOH
       } #resources
       service {
         name = "$\u007BNOMAD_NAMESPACE\u007D-kibana"
-        tags = [ "urlprefix-/kibana/" ]
+        tags = [ "urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/kibana/" ]
         port = "healthcheck"
         check {
           name     = "kibana-internal-port-check"
