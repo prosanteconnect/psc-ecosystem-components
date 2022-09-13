@@ -49,7 +49,7 @@ rules:
   actions:
   - executor: http
     parameters:
-      {{ range service "${nomad_namespace}-pscload" }} url: http://{{ .Address }}:{{ .Port }}/pscload/v2/process/continue {{ end }}
+      url: http://{{ range service "${nomad_namespace}-pscload" }}{{ .Address }}:{{ .Port }}/pscload/v2/process/continue {{ end }}
       header Accept: "application/json"
       success_http_status: 202
       method: POST
