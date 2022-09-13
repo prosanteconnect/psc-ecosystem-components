@@ -1,6 +1,7 @@
 job "psc-rabbitmq" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   vault {
     policies = ["psc-ecosystem"]
@@ -51,7 +52,7 @@ job "psc-rabbitmq" {
         mount {
           type = "volume"
           target = "/var/lib/rabbitmq"
-          source = "rabbitmq"
+          source = "${nomad_namespace}-rabbitmq"
           readonly = false
           volume_options {
             no_copy = false
@@ -87,9 +88,9 @@ job "psc-rabbitmq" {
       template {
         data = <<EOH
 RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = "-rabbitmq_management path_prefix \"/rabbitmq\""
-RABBITMQ_DEFAULT_USER="{{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.user }}{{ end }}"
-RABBITMQ_DEFAULT_PASS="{{ with secret "psc-ecosystem/rabbitmq" }}{{ .Data.data.password }}{{ end }}"
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+RABBITMQ_DEFAULT_USER="{{ with secret "psc-ecosystem/${nomad_namespace}/rabbitmq" }}{{ .Data.data.user }}{{ end }}"
+RABBITMQ_DEFAULT_PASS="{{ with secret "psc-ecosystem/${nomad_namespace}/rabbitmq" }}{{ .Data.data.password }}{{ end }}"
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
 EOH
         destination = "secrets/file.env"
         env = true
@@ -227,7 +228,7 @@ EOF
         memory = 512
       }
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         port = "endpoint"
         check {
           name         = "alive"
@@ -238,7 +239,7 @@ EOF
         }
       }
 	  service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D-metrics"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D-metrics"
         port = "metrics"
         check {
           name         = "alive"
@@ -249,7 +250,7 @@ EOF
         }
       }
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D-management"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D-management"
         port = "management"
         tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/rabbitmq/"]
         check {
