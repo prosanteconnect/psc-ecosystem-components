@@ -27,7 +27,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-logstash" {
     }
     registry {
       use "docker" {
-        image = "prosanteconnect/mongodb"
+        image = "prosanteconnect/psc-logstash"
         tag = var.tag
         username = var.registry_username
         password = var.registry_password
