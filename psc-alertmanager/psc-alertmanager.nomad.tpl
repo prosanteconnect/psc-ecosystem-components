@@ -73,7 +73,7 @@ job "psc-alertmanager" {
               <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <a href="https://{{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname}}{{ end }}/psc-prometheus/graph"
+                    <a href="https://{{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname}}{{ end }}/psc-prometheus/graph"
                        style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
                     color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer;
                     display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda;
@@ -93,7 +93,7 @@ job "psc-alertmanager" {
 
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <form action="https://{{ with secret "psc-ecosystem/pscload" }}{{ .Data.data.public_hostname}}{{ end }}/pscload/v2/process/continue" method="post">
+                    <form action="https://{{ with secret "psc-ecosystem/${nomad_namespace}/pscload" }}{{ .Data.data.public_hostname}}{{ end }}/pscload/v2/process/continue" method="post">
                       <input type="submit" name="continue" value="Continuer le processus" formmethod="post"
                              formtarget="display-frame"
                              style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
@@ -161,7 +161,7 @@ receivers:
     require_tls: true
     html : {{ `'{{ template "email.custom.html" . }}'` }}
 - name: 'pscload-webhook'
-{{ range service "webhooker" }}  webhook_configs:
+{{ range service "${nomad_namespace}-webhooker" }}  webhook_configs:
   - url: http://{{ .Address }}:{{ .Port }}/webhooker{{ end }}
 EOH
       }
