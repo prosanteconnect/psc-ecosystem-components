@@ -28,7 +28,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-prometheus" {
     }
     registry {
       use "docker" {
-        image = "prosanteconnect/mongodb"
+        image = "prosanteconnect/psc-prometheus"
         tag = var.tag
         username = var.registry_username
         password = var.registry_password
