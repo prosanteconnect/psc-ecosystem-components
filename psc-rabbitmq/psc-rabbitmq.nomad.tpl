@@ -52,7 +52,7 @@ job "psc-rabbitmq" {
         mount {
           type = "volume"
           target = "/var/lib/rabbitmq"
-          source = "rabbitmq"
+          source = "${nomad_namespace}-rabbitmq"
           readonly = false
           volume_options {
             no_copy = false
