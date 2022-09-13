@@ -52,7 +52,7 @@ job "psc-rabbitmq" {
         mount {
           type = "volume"
           target = "/var/lib/rabbitmq"
-          source = "${nomad_namespace}-rabbitmq"
+          source = "rabbitmq"
           readonly = false
           volume_options {
             no_copy = false
@@ -90,7 +90,7 @@ job "psc-rabbitmq" {
 RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS = "-rabbitmq_management path_prefix \"/rabbitmq\""
 RABBITMQ_DEFAULT_USER="{{ with secret "psc-ecosystem/${nomad_namespace}/rabbitmq" }}{{ .Data.data.user }}{{ end }}"
 RABBITMQ_DEFAULT_PASS="{{ with secret "psc-ecosystem/${nomad_namespace}/rabbitmq" }}{{ .Data.data.password }}{{ end }}"
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+PUBLIC_HOSTNAME="{{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}"
 EOH
         destination = "secrets/file.env"
         env = true
