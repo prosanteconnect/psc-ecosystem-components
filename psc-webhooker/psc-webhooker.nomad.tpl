@@ -1,6 +1,7 @@
 job "webhooker" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   group "webhooker" {
     count = 1
@@ -66,8 +67,8 @@ EOH
       }
 
       service {
-        name = "webhooker"
-        tags = ["urlprefix-/webhooker"]
+        name = "$\u007BNOMAD_NAMESPACE\u007D-webhooker"
+        tags = ["urlprefix-/$\u007BNOMAD_NAMESPACE\u007D-webhooker"]
         port = "webhooker"
         check {
           name     = "webhooker port alive"
