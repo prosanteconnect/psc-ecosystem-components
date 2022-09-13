@@ -27,7 +27,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-elasticsearch" {
     }
     registry {
       use "docker" {
-        image = "prosanteconnect/mongodb"
+        image = "prosanteconnect/psc-elasticsearch"
         tag = var.tag
         username = var.registry_username
         password = var.registry_password
