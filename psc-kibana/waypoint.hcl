@@ -27,7 +27,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-kibana" {
     }
     registry {
       use "docker" {
-        image = "prosanteconnect/mongodb"
+        image = "prosanteconnect/psc-kibana"
         tag = var.tag
         username = var.registry_username
         password = var.registry_password
