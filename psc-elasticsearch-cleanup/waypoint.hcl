@@ -27,7 +27,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-elasticsearch-cleanup" {
     }
     registry {
       use "docker" {
-        image = "prosanteconnect/mongodb"
+        image = "prosanteconnect/es-cleanup"
         tag = var.tag
         username = var.registry_username
         password = var.registry_password
