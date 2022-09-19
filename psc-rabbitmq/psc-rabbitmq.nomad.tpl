@@ -114,33 +114,28 @@ EOF
 		  "auto_delete": false,
 		  "durable": true,
 		  "name": "file.upload",
-		  "type": "classic",
-		  #"vhost": "/"
+		  "type": "classic"
 		},
 		{
 		  "name": "ps-queue",
-		  #"vhost": "/",
 		  "durable": true,
 		  "auto_delete": false,
 		  "arguments": {}
 		},
 		{
 		  "name": "contact-queue.parking-lot",
-		  #"vhost": "/",
 		  "durable": true,
 		  "auto_delete": false,
 		  "arguments": {}
 		},
 		{
 		  "name": "contact-queue.dlq",
-		  #"vhost": "/",
 		  "durable": true,
 		  "auto_delete": false,
 		  "arguments": {}
 		},
 		{
 		  "name": "contact-queue",
-		  #"vhost": "/",
 		  "durable": true,
 		  "auto_delete": false,
 		  "arguments": {
@@ -151,7 +146,6 @@ EOF
 	  "exchanges": [
 		{
 		  "name": "contact-messages-exchange",
-		  #"vhost": "/",
 		  "type": "direct",
 		  "durable": true,
 		  "auto_delete": false,
@@ -160,7 +154,6 @@ EOF
 		},
 		{
 		  "name": "contact-queueexchange.parking-lot",
-		  #"vhost": "/",
 		  "type": "fanout",
 		  "durable": true,
 		  "auto_delete": false,
@@ -169,7 +162,6 @@ EOF
 		},
 		{
 		  "name": "contact-queue.dlx",
-		  #"vhost": "/",
 		  "type": "fanout",
 		  "durable": true,
 		  "auto_delete": false,
@@ -183,12 +175,10 @@ EOF
 		  "destination": "file.upload",
 		  "destination_type": "queue",
 		  "routing_key": "file.upload",
-		  "source": "amq.topic",
-		  #"vhost": "/"
+		  "source": "amq.topic"
 		},
 			{
 		  "source": "contact-messages-exchange",
-		  #"vhost": "/",
 		  "destination": "contact-queue",
 		  "destination_type": "queue",
 		  "routing_key": "ROUTING_KEY_CONTACT_MESSAGES_QUEUE",
@@ -196,7 +186,6 @@ EOF
 		},
 		{
 		  "source": "contact-messages-exchange",
-		  #"vhost": "/",
 		  "destination": "contact-queue",
 		  "destination_type": "queue",
 		  "routing_key": "contact-queue",
@@ -204,7 +193,6 @@ EOF
 		},
 		{
 		  "source": "contact-queue.dlx",
-		  #"vhost": "/",
 		  "destination": "contact-queue.dlq",
 		  "destination_type": "queue",
 		  "routing_key": "",
@@ -212,7 +200,6 @@ EOF
 		},
 		{
 		  "source": "contact-queueexchange.parking-lot",
-		  #"vhost": "/",
 		  "destination": "contact-queue.parking-lot",
 		  "destination_type": "queue",
 		  "routing_key": "",
