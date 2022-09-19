@@ -75,15 +75,15 @@ job "psc-rabbitmq" {
             propagation = "rshared"
           }
         }
-        mount {
-          type = "bind"
-          target = "/etc/rabbitmq/definitions.json"
-          source = "local/definitions.json"
-          readonly = false
-          bind_options {
-            propagation = "rshared"
-          }
-        }
+        #mount {
+        #  type = "bind"
+        #  target = "/etc/rabbitmq/definitions.json"
+        #  source = "local/definitions.json"
+        #  readonly = false
+        #  bind_options {
+        #    propagation = "rshared"
+        #  }
+        #}
       }
       template {
         data = <<EOH
