@@ -75,15 +75,15 @@ job "psc-rabbitmq" {
             propagation = "rshared"
           }
         }
-        mount {
-          type = "bind"
-          target = "/etc/rabbitmq/definitions.json"
-          source = "local/definitions.json"
-          readonly = false
-          bind_options {
-            propagation = "rshared"
-          }
-        }
+        #mount {
+        #  type = "bind"
+        #  target = "/etc/rabbitmq/definitions.json"
+        #  source = "local/definitions.json"
+        #  readonly = false
+        #  bind_options {
+        #    propagation = "rshared"
+        #  }
+        #}
       }
       template {
         data = <<EOH
@@ -103,125 +103,125 @@ management.load_definitions = /etc/rabbitmq/definitions.json
 management.tcp.port = 15672
 EOF
       }
-      template {
-        change_mode = "restart"
-        destination = "local/definitions.json"
-        data = <<EOF
-{
-	"queues": [
-		{
-		  "arguments": {},
-		  "auto_delete": false,
-		  "durable": true,
-		  "name": "file.upload",
-		  "vhost": "/",
-		  "type": "classic"
-		},
-		{
-		  "name": "ps-queue",
-		  "durable": true,
-		  "auto_delete": false,
-		  "vhost": "/",
-		  "arguments": {}
-		},
-		{
-		  "name": "contact-queue.parking-lot",
-		  "durable": true,
-		  "auto_delete": false,
-		  "vhost": "/",
-		  "arguments": {}
-		},
-		{
-		  "name": "contact-queue.dlq",
-		  "durable": true,
-		  "auto_delete": false,
-		  "vhost": "/",
-		  "arguments": {}
-		},
-		{
-		  "name": "contact-queue",
-		  "durable": true,
-		  "auto_delete": false,
-		  "vhost": "/",
-		  "arguments": {
-			"x-dead-letter-exchange": "contact-queue.dlx"
-		  }
-		}
-	],
-	  "exchanges": [
-		{
-		  "name": "contact-messages-exchange",
-		  "type": "direct",
-		  "durable": true,
-		  "auto_delete": false,
-		  "internal": false,
-		  "vhost": "/",
-		  "arguments": {}
-		},
-		{
-		  "name": "contact-queueexchange.parking-lot",
-		  "type": "fanout",
-		  "durable": true,
-		  "auto_delete": false,
-		  "internal": false,
-		  "vhost": "/",
-		  "arguments": {}
-		},
-		{
-		  "name": "contact-queue.dlx",
-		  "type": "fanout",
-		  "durable": true,
-		  "auto_delete": false,
-		  "internal": false,
-		  "vhost": "/",
-		  "arguments": {}
-		}
-	],
-		"bindings": [
-		{
-		  "arguments": {},
-		  "destination": "file.upload",
-		  "destination_type": "queue",
-		  "routing_key": "file.upload",
-		  "vhost": "/",
-		  "source": "amq.topic"
-		},
-			{
-		  "source": "contact-messages-exchange",
-		  "destination": "contact-queue",
-		  "destination_type": "queue",
-		  "routing_key": "ROUTING_KEY_CONTACT_MESSAGES_QUEUE",
-		  "vhost": "/",
-		  "arguments": {}
-		},
-		{
-		  "source": "contact-messages-exchange",
-		  "destination": "contact-queue",
-		  "destination_type": "queue",
-		  "routing_key": "contact-queue",
-		  "vhost": "/",
-		  "arguments": {}
-		},
-		{
-		  "source": "contact-queue.dlx",
-		  "destination": "contact-queue.dlq",
-		  "destination_type": "queue",
-		  "routing_key": "",
-		  "vhost": "/",
-		  "arguments": {}
-		},
-		{
-		  "source": "contact-queueexchange.parking-lot",
-		  "destination": "contact-queue.parking-lot",
-		  "destination_type": "queue",
-		  "routing_key": "",
-		  "vhost": "/",
-		  "arguments": {}
-		}
-	]
-}
-EOF
-      }
+      #template {
+      #  change_mode = "restart"
+      #  destination = "local/definitions.json"
+      #  data = <<EOF
+#{
+#	"queues": [
+#		{
+#		  "arguments": {},
+#		  "auto_delete": false,
+#		  "durable": true,
+#		  "name": "file.upload",
+#		  "vhost": "/",
+#		  "type": "classic"
+#		},
+#		{
+#		  "name": "ps-queue",
+#		  "durable": true,
+#		  "auto_delete": false,
+#		  "vhost": "/",
+#		  "arguments": {}
+#		},
+#		{
+#		  "name": "contact-queue.parking-lot",
+#		  "durable": true,
+#		  "auto_delete": false,
+#		  "vhost": "/",
+#		  "arguments": {}
+#		},
+#		{
+#		  "name": "contact-queue.dlq",
+#		  "durable": true,
+#		  "auto_delete": false,
+#		  "vhost": "/",
+#		  "arguments": {}
+#		},
+#		{
+#		  "name": "contact-queue",
+#		  "durable": true,
+#		  "auto_delete": false,
+#		  "vhost": "/",
+#		  "arguments": {
+#			"x-dead-letter-exchange": "contact-queue.dlx"
+#		  }
+#		}
+#	],
+#	  "exchanges": [
+#		{
+#		  "name": "contact-messages-exchange",
+#		  "type": "direct",
+#		  "durable": true,
+#		  "auto_delete": false,
+#		  "internal": false,
+#		  "vhost": "/",
+#		  "arguments": {}
+#		},
+#		{
+#		  "name": "contact-queueexchange.parking-lot",
+#		  "type": "fanout",
+#		  "durable": true,
+#		  "auto_delete": false,
+#		  "internal": false,
+#		  "vhost": "/",
+#		  "arguments": {}
+#		},
+#		{
+#		  "name": "contact-queue.dlx",
+#		  "type": "fanout",
+#		  "durable": true,
+#		  "auto_delete": false,
+#		  "internal": false,
+#		  "vhost": "/",
+#		  "arguments": {}
+#		}
+#	],
+#		"bindings": [
+#		{
+#		  "arguments": {},
+#		  "destination": "file.upload",
+#		  "destination_type": "queue",
+#		  "routing_key": "file.upload",
+#		  "vhost": "/",
+#		  "source": "amq.topic"
+#		},
+#			{
+#		  "source": "contact-messages-exchange",
+#		  "destination": "contact-queue",
+#		  "destination_type": "queue",
+#		  "routing_key": "ROUTING_KEY_CONTACT_MESSAGES_QUEUE",
+#		  "vhost": "/",
+#		  "arguments": {}
+#		},
+#		{
+#		  "source": "contact-messages-exchange",
+#		  "destination": "contact-queue",
+#		  "destination_type": "queue",
+#		  "routing_key": "contact-queue",
+#		  "vhost": "/",
+#		  "arguments": {}
+#		},
+#		{
+#		  "source": "contact-queue.dlx",
+#		  "destination": "contact-queue.dlq",
+#		  "destination_type": "queue",
+#		  "routing_key": "",
+#		  "vhost": "/",
+#		  "arguments": {}
+#		},
+#		{
+#		  "source": "contact-queueexchange.parking-lot",
+#		  "destination": "contact-queue.parking-lot",
+#		  "destination_type": "queue",
+#		  "routing_key": "",
+#		  "vhost": "/",
+#		  "arguments": {}
+#		}
+#	]
+#}
+#EOF
+#      }
 
       resources {
         cpu    = 100
