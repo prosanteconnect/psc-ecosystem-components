@@ -114,30 +114,35 @@ EOF
 		  "auto_delete": false,
 		  "durable": true,
 		  "name": "file.upload",
+		  "vhost": "/",
 		  "type": "classic"
 		},
 		{
 		  "name": "ps-queue",
 		  "durable": true,
 		  "auto_delete": false,
+		  "vhost": "/",
 		  "arguments": {}
 		},
 		{
 		  "name": "contact-queue.parking-lot",
 		  "durable": true,
 		  "auto_delete": false,
+		  "vhost": "/",
 		  "arguments": {}
 		},
 		{
 		  "name": "contact-queue.dlq",
 		  "durable": true,
 		  "auto_delete": false,
+		  "vhost": "/",
 		  "arguments": {}
 		},
 		{
 		  "name": "contact-queue",
 		  "durable": true,
 		  "auto_delete": false,
+		  "vhost": "/",
 		  "arguments": {
 			"x-dead-letter-exchange": "contact-queue.dlx"
 		  }
@@ -150,6 +155,7 @@ EOF
 		  "durable": true,
 		  "auto_delete": false,
 		  "internal": false,
+		  "vhost": "/",
 		  "arguments": {}
 		},
 		{
@@ -158,6 +164,7 @@ EOF
 		  "durable": true,
 		  "auto_delete": false,
 		  "internal": false,
+		  "vhost": "/",
 		  "arguments": {}
 		},
 		{
@@ -166,6 +173,7 @@ EOF
 		  "durable": true,
 		  "auto_delete": false,
 		  "internal": false,
+		  "vhost": "/",
 		  "arguments": {}
 		}
 	],
@@ -175,6 +183,7 @@ EOF
 		  "destination": "file.upload",
 		  "destination_type": "queue",
 		  "routing_key": "file.upload",
+		  "vhost": "/",
 		  "source": "amq.topic"
 		},
 			{
@@ -182,6 +191,7 @@ EOF
 		  "destination": "contact-queue",
 		  "destination_type": "queue",
 		  "routing_key": "ROUTING_KEY_CONTACT_MESSAGES_QUEUE",
+		  "vhost": "/",
 		  "arguments": {}
 		},
 		{
@@ -189,6 +199,7 @@ EOF
 		  "destination": "contact-queue",
 		  "destination_type": "queue",
 		  "routing_key": "contact-queue",
+		  "vhost": "/",
 		  "arguments": {}
 		},
 		{
@@ -196,6 +207,7 @@ EOF
 		  "destination": "contact-queue.dlq",
 		  "destination_type": "queue",
 		  "routing_key": "",
+		  "vhost": "/",
 		  "arguments": {}
 		},
 		{
@@ -203,6 +215,7 @@ EOF
 		  "destination": "contact-queue.parking-lot",
 		  "destination_type": "queue",
 		  "routing_key": "",
+		  "vhost": "/",
 		  "arguments": {}
 		}
 	]
