@@ -99,7 +99,6 @@ EOH
         change_mode = "restart"
         destination = "local/20-management.conf"
         data = <<EOF
-management.load_definitions = /etc/rabbitmq/definitions.json
 management.tcp.port = 15672
 EOF
       }
