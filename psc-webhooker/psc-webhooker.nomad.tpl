@@ -22,7 +22,7 @@ job "webhooker" {
 	
     task "webhooker" {
         template {
-        change_mode = "noop"
+        change_mode = "restart"
         destination = "local/config.yaml"
         data = <<EOH
 # cache size for blocked tasks
