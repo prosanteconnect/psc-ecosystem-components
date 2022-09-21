@@ -28,6 +28,11 @@ job "elasticsearch" {
         data = <<EOF
 cd /usr/share/elasticsearch
 bin/elasticsearch-plugin install -b repository-s3
+{{ with secret "forge/scaleway/s3" }}
+echo {{ .Data.data.s3_endpoint }} | bin/elasticsearch-keystore add s3.client.scaleway.endpoint
+echo {{ .Data.data.access_key }} | bin/elasticsearch-keystore add s3.client.scaleway.access_key
+echo {{ .Data.data.secret_key }} | bin/elasticsearch-keystore add s3.client.scaleway.secret_key
+{{ end }}
 exec /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
 EOF
       }
