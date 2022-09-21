@@ -28,7 +28,7 @@ job "elasticsearch" {
         data = <<EOF
 cd /usr/share/elasticsearch
 bin/elasticsearch-plugin install -b repository-s3
-exec /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
+exec /usr/local/bin/docker-entrypoint.sh eswrapper
 EOF
       }
 
