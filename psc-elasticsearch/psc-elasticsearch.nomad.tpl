@@ -34,6 +34,7 @@ job "elasticsearch" {
 cd /usr/share/elasticsearch
 bin/elasticsearch-plugin install -b repository-s3
 {{ with secret "forge/scaleway/s3" }}
+bin/elasticsearch-keystore create
 echo {{ .Data.data.s3_endpoint }} | bin/elasticsearch-keystore add s3.client.scaleway.endpoint
 echo {{ .Data.data.access_key }} | bin/elasticsearch-keystore add s3.client.scaleway.access_key
 echo {{ .Data.data.secret_key }} | bin/elasticsearch-keystore add s3.client.scaleway.secret_key
