@@ -28,6 +28,16 @@ job "elasticsearch" {
       driver = "docker"
 
       template {
+        change_mode = "noop"
+        destination = "local/elasticsearch.yml"
+        data = <<EOF
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+s3.client.scaleway.endpoint: "https://secpsc-backup.s3.fr-par.scw.cloud"
+EOF
+      }
+
+      template {
         change_mode = "restart"
         destination = "local/install_and_run_elasticsearch.sh"
         data = <<EOF
@@ -49,6 +59,16 @@ EOF
           "name=${nomad_namespace}-elasticsearch-with-plugin,io_priority=high,size=20,repl=2:/usr/share/elasticsearch/data"
         ]
         volume_driver = "pxd"
+
+        mount {
+          type = "bind"
+          target = "/usr/share/elasticsearch/config/elasticsearch.yml"
+          source = "local/elasticsearch.yml"
+          readonly = false
+          bind_options {
+            propagation = "rshared"
+          }
+        }
 
         entrypoint = [
           "/bin/bash",
