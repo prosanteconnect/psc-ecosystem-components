@@ -40,7 +40,11 @@ EOF
         ]
         volume_driver = "pxd"
 
-        entrypoint = " /bin/sh -c '/local/install_and_run_elasticsearch.sh'"
+        entrypoint = [
+          "/bin/sh",
+          "-c",
+          "/local/install_and_run_elasticsearch.sh"
+        ]
       }
 
       resources {
