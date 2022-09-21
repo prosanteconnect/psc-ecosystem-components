@@ -22,13 +22,28 @@ job "elasticsearch" {
     task "elasticsearch" {
       driver = "docker"
 
+      template {
+        change_mode = "restart"
+        destination = "local/install_and_run_elasticsearch.sh"
+        data = <<EOF
+cd /usr/share/elasticsearch
+bin/elasticsearch-plugin install repository-s3 -y
+exec /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
+EOF
+      }
+
       config {
         image = "${image}:${tag}"
         ports = ["es", "ed"]
         volumes = [
-          "name=${nomad_namespace}-elasticsearch,io_priority=high,size=20,repl=2:/usr/share/elasticsearch/data"
+          "name=${nomad_namespace}-elasticsearch-with-plugin,io_priority=high,size=20,repl=2:/usr/share/elasticsearch/data"
         ]
         volume_driver = "pxd"
+
+        command = "/bin/bash"
+        args = [
+          "/local/install_and_run_elasticsearch.sh"
+        ]
       }
 
       resources {
