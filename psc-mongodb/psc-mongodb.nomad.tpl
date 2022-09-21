@@ -1,6 +1,7 @@
 job "psc-mongodb" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   vault {
     policies = ["psc-ecosystem"]
@@ -37,8 +38,8 @@ job "psc-mongodb" {
       driver = "docker"
       template {
         data = <<EOH
-          MONGO_INITDB_ROOT_USERNAME = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_user }}{{ end }}
-          MONGO_INITDB_ROOT_PASSWORD = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
+          MONGO_INITDB_ROOT_USERNAME = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.root_user }}{{ end }}
+          MONGO_INITDB_ROOT_PASSWORD = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
         EOH
         destination = "secrets/.env"
         change_mode = "restart"
@@ -47,16 +48,16 @@ job "psc-mongodb" {
       config {
         image = "${image}:${tag}"
         ports = ["db"]
-        volumes = ["name=psc-mongodb,fs=xfs,io_priority=high,size=8,repl=2:/data/db",
-          "name=psc-mongodb-config, fs=xfs, io_priority=high, size=1, repl=2:/data/configdb"]
+        volumes = ["name=$\u007BNOMAD_NAMESPACE\u007D-psc-mongodb,fs=xfs,io_priority=high,size=8,repl=2:/data/db",
+          "name=$\u007BNOMAD_NAMESPACE\u007D-psc-mongodb-config, fs=xfs, io_priority=high, size=1, repl=2:/data/configdb"]
         volume_driver = "pxd"
       }
       resources {
         cpu    = 500
-        memory = 2048
+        memory = 1536
       }
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         port = "db"
         check {
           name         = "alive"
@@ -66,30 +67,6 @@ job "psc-mongodb" {
           failures_before_critical = 5
           port         = "db"
         }
-      }
-    }
-
-    task "log-shipper" {
-      driver = "docker"
-      restart {
-        interval = "30m"
-        attempts = 5
-        delay    = "15s"
-        mode     = "delay"
-      }
-      meta {
-        INSTANCE = "$\u007BNOMAD_ALLOC_NAME\u007D"
-      }
-      template {
-        data = <<EOH
-LOGSTASH_HOST = {{ range service "logstash" }}{{ .Address }}:{{ .Port }}{{ end }}
-ENVIRONMENT = "${datacenter}"
-EOH
-        destination = "local/file.env"
-        env = true
-      }
-      config {
-        image = "${registry_path}/filebeat:7.14.2"
       }
     }
   }

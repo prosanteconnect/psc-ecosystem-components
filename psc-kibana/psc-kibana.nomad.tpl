@@ -1,6 +1,8 @@
 job "kibana" {
+  namespace = "${nomad_namespace}"
   datacenters = ["${datacenter}"]
   type = "service"
+  
   vault {
     policies = ["psc-ecosystem"]
     change_mode = "restart"
@@ -30,9 +32,9 @@ job "kibana" {
                data = <<EOH
 server.name: kibana
 server.basePath: "/kibana"
-server.publicBaseUrl: "https://{{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}/kibana"
+server.publicBaseUrl: "https://{{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}/kibana"
 server.rewriteBasePath: true
-{{range service "elasticsearch" }}elasticsearch.hosts: [ "http://{{.Address}}:{{.Port}}" ]{{end}}
+{{range service "${nomad_namespace}-elasticsearch" }}elasticsearch.hosts: [ "http://{{.Address}}:{{.Port}}" ]{{end}}
 server.host: "0.0.0.0"
 xpack.monitoring.ui.container.elasticsearch.enabled: false
 
@@ -57,9 +59,19 @@ EOH
       resources {
         memory  = 1024
       } #resources
+      
+      template {
+        change_mode = "restart"
+        destination = "local/file.env"
+        env = true
+        data = <<EOF
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+EOF
+      }
+      
       service {
-        name = "kibana"
-        tags = [ "urlprefix-/kibana/" ]
+        name = "$\u007BNOMAD_NAMESPACE\u007D-kibana"
+        tags = [ "urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/kibana/" ]
         port = "healthcheck"
         check {
           name     = "kibana-internal-port-check"
