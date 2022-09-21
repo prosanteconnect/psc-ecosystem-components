@@ -4,6 +4,11 @@ job "elasticsearch" {
   datacenters = ["${datacenter}"]
   namespace = "${nomad_namespace}"
 
+  vault {
+    policies = ["forge"]
+    change_mode = "restart"
+  }
+
   update {
     stagger = "30s"
     max_parallel = 1
