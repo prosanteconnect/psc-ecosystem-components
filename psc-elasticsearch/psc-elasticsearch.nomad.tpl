@@ -33,7 +33,7 @@ job "elasticsearch" {
         data = <<EOF
 cluster.name: "docker-cluster"
 network.host: 0.0.0.0
-s3.client.scaleway.endpoint: "https://secpsc-backup.s3.fr-par.scw.cloud"
+s3.client.scaleway.endpoint: "s3.fr-par.scw.cloud"
 EOF
       }
 
