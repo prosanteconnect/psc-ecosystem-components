@@ -28,7 +28,7 @@ job "elasticsearch" {
         data = <<EOF
 cd /usr/share/elasticsearch
 bin/elasticsearch-plugin install -b repository-s3
-exec /usr/local/bin/docker-entrypoint.sh eswrapper
+exec /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
 EOF
       }
 
@@ -40,10 +40,7 @@ EOF
         ]
         volume_driver = "pxd"
 
-        command = "/bin/bash"
-        args = [
-          "/local/install_and_run_elasticsearch.sh"
-        ]
+        entrypoint = " /bin/sh -c '/local/install_and_run_elasticsearch.sh'"
       }
 
       resources {
