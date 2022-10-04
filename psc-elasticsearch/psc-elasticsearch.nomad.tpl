@@ -4,10 +4,10 @@ job "elasticsearch" {
 
   datacenters = ["${datacenter}"]
 
-#  vault {
-#    policies = ["forge"]
-#    change_mode = "restart"
-#  }
+  vault {
+    policies = ["forge"]
+    change_mode = "restart"
+  }
 
   update {
     stagger = "30s"
