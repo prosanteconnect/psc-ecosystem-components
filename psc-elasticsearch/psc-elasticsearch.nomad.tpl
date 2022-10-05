@@ -34,6 +34,7 @@ job "elasticsearch" {
 cluster.name: "docker-cluster"
 network.host: 0.0.0.0
 #s3.client.scaleway.endpoint: "s3.fr-par.scw.cloud"
+reindex.remote.whitelist: "ovh.elasticsearch:80"
 EOF
       }
 
