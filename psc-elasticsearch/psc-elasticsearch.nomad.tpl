@@ -42,12 +42,12 @@ EOF
         destination = "local/install_and_run_elasticsearch.sh"
         data = <<EOF
 cd /usr/share/elasticsearch
-bin/elasticsearch-plugin install -b repository-s3
-{{ with secret "forge/ovh/s3" }}
-bin/elasticsearch-keystore create
-echo {{ .Data.data.access_key }} | bin/elasticsearch-keystore add s3.client.scaleway.access_key
-echo {{ .Data.data.secret_key }} | bin/elasticsearch-keystore add s3.client.scaleway.secret_key
-{{ end }}
+#bin/elasticsearch-plugin install -b repository-s3
+#{{ with secret "forge/ovh/s3" }}
+#bin/elasticsearch-keystore create
+#echo {{ .Data.data.access_key }} | bin/elasticsearch-keystore add s3.client.scaleway.access_key
+#echo {{ .Data.data.secret_key }} | bin/elasticsearch-keystore add s3.client.scaleway.secret_key
+#{{ end }}
 exec /bin/tini -- /usr/local/bin/docker-entrypoint.sh eswrapper
 EOF
       }
