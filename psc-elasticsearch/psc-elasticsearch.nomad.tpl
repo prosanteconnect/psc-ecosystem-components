@@ -87,7 +87,7 @@ EOF
 
       service {
         name = "elasticsearch"
-        tags = ["global","elasticsearch"]
+        tags = ["global","elasticsearch","urlprefix-ovh.elasticsearch/ovh-es strip=/ovh-es"]
         port = "es"
         check {
           name = "alive"
