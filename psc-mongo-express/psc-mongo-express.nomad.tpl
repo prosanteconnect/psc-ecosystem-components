@@ -37,6 +37,9 @@ ME_CONFIG_MONGODB_PORT = {{ range service "${nomad_namespace}-psc-mongodb" }}{{ 
 ME_CONFIG_MONGODB_ADMINUSERNAME = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.root_user }}{{ end }}
 ME_CONFIG_MONGODB_ADMINPASSWORD = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
 ME_CONFIG_SITE_BASEURL = "/psc-db/"
+ME_CONFIG_MONGODB_ENABLE_ADMIN = true
+ME_CONFIG_BASICAUTH_USERNAME = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.express_user }}{{ end }}
+ME_CONFIG_BASICAUTH_PASSWORD = {{ with secret "psc-ecosystem/${nomad_namespace}/mongodb" }}{{ .Data.data.express_pass }}{{ end }}
 EOH
         destination = "secrets/file.env"
         change_mode = "restart"
