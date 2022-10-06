@@ -37,7 +37,7 @@ ME_CONFIG_MONGODB_ADMINUSERNAME = {{ with secret "psc-ecosystem/mongodb" }}{{ .D
 ME_CONFIG_MONGODB_ADMINPASSWORD = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.root_pass }}{{ end }}
 ME_CONFIG_MONGODB_AUTH_USERNAME = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.express_user }}{{ end }}
 ME_CONFIG_MONGODB_AUTH_PASSWORD = {{ with secret "psc-ecosystem/mongodb" }}{{ .Data.data.express_pass }}{{ end }}
-ME_CONFIG_MONGODB_AUTH_USERNAME = "mongodb"
+ME_CONFIG_MONGODB_AUTH_DATABASE = "mongodb"
 ME_CONFIG_SITE_BASEURL = "/psc-db/"
 EOH
         destination = "secrets/file.env"
