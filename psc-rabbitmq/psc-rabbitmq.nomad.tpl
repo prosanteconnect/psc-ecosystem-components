@@ -30,13 +30,6 @@ job "psc-rabbitmq" {
       value     = "data"
     }
 
-    update {
-      max_parallel      = 1
-      min_healthy_time  = "30s"
-      progress_deadline = "5m"
-      healthy_deadline  = "2m"
-    }
-
     network {
       port "endpoint" { to = 5672 }
       port "management" { to = 15672 }

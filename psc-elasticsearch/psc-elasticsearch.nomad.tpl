@@ -9,11 +9,6 @@ job "elasticsearch" {
     change_mode = "restart"
   }
 
-  update {
-    stagger = "30s"
-    max_parallel = 1
-  }
-
   group "elasticsearch" {
     count = 1
     constraint {

@@ -4,11 +4,6 @@ job "logstash" {
   datacenters = ["${datacenter}"]
   namespace = "${nomad_namespace}"
 
-  update {
-    stagger = "30s"
-    max_parallel = 1
-  }
-
   group "logstash" {
     count = 1
 

@@ -12,10 +12,6 @@ job "kibana" {
     value = "standard"
   }
   group "kibana" {
-    update {
-      stagger = "10s"
-      max_parallel = 1
-    }
     count = 1
     restart {
       attempts = 5

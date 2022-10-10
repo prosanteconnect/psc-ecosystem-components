@@ -17,12 +17,6 @@ job "psc-mongo-express" {
       interval = "1h"
       mode = "fail"
     }
-    update {
-      max_parallel      = 1
-      min_healthy_time  = "30s"
-      progress_deadline = "5m"
-      healthy_deadline  = "2m"
-    }
 
     network {
       port "ui" { to = 8081 }
