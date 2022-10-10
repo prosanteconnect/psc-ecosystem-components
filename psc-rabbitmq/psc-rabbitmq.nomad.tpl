@@ -217,7 +217,7 @@ EOF
 
       resources {
         cpu    = 100
-        memory = 512
+        memory = 2048
       }
       service {
         name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
