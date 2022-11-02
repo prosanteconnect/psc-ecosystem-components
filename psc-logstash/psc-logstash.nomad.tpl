@@ -1,13 +1,8 @@
 job "logstash" {
 
   type = "service"
-
   datacenters = ["${datacenter}"]
-
-  update {
-    stagger = "30s"
-    max_parallel = 1
-  }
+  namespace = "${nomad_namespace}"
 
   group "logstash" {
     count = 1
@@ -27,7 +22,7 @@ job "logstash" {
       template {
                data =  <<EOH
 HTTP_HOST="0.0.0.0"
-{{range service "elasticsearch" }}XPACK_MONITORING_ELASTICSEARCH_HOSTS=[ "http://{{.Address}}:{{.Port}}" ]{{end}}
+{{range service "${nomad_namespace}-elasticsearch" }}XPACK_MONITORING_ELASTICSEARCH_HOSTS=[ "http://{{.Address}}:{{.Port}}" ]{{end}}
 EOH
                 destination = "secrets/file.env"
                 env = true
@@ -57,7 +52,7 @@ filter {
 output {
   if "_grokparsefailure" not in [tags] {
     elasticsearch {
-      {{range service "elasticsearch" }}hosts => [ "http://{{.Address}}:{{.Port}}" ]{{end}}
+      {{range service "${nomad_namespace}-elasticsearch" }}hosts => [ "http://{{.Address}}:{{.Port}}" ]{{end}}
       index => "%%%{[@metadata][beat]}-%%%{[@metadata][version]}-%%%{+YYYY.MM.dd}"
       manage_template => false
     }
@@ -77,7 +72,7 @@ EOH
       }
 
       service {
-        name = "logstash"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-logstash"
         port = "logstash"
         check {
           name = "alive"

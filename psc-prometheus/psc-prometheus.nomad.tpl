@@ -1,6 +1,7 @@
 job "psc-prometheus" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   vault {
     policies = ["psc-ecosystem"]
@@ -71,8 +72,8 @@ scrape_configs:
     metrics_path: '/pscload/v2/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-    - targets: ['{{ range service "pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
-{{ range service "psc-rabbitmq-metrics" }}
+    - targets: ['{{ range service "${nomad_namespace}-pscload" }}{{ .Address }}:{{ .Port }}{{ end }}']
+{{ range service "${nomad_namespace}-psc-rabbitmq-metrics" }}
   - job_name: 'rabbitmq'
     metrics_path: '/metrics/per-object'
     scrape_interval: 15s
@@ -84,7 +85,7 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-      - '{{ range service "psc-alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
+      - '{{ range service "${nomad_namespace}-psc-alertmanager" }}{{ .Address }}:{{ .Port }}{{ end }}'
 
 rule_files:
   - /local/rules.yml
@@ -107,25 +108,25 @@ groups:
     labels:
       severity: critical
     annotations:
-      Total ADELI delete: {{`{{$value}}`}}
+      summary: Total ADELI delete = {{`{{$value}}`}}
   - alert: pscload-critical-finess-delete-size
     expr: ps_metric{idType="FINESS",operation="delete"} > scalar(ps_metric{idType="FINESS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total FINESS delete: {{`{{$value}}`}}
+      summary: Total FINESS delete = {{`{{$value}}`}}
   - alert: pscload-critical-siret-delete-size
     expr: ps_metric{idType="SIRET",operation="delete"} > scalar(ps_metric{idType="SIRET",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total SIRET delete: {{`{{$value}}`}}
+      summary: Total SIRET delete = {{`{{$value}}`}}
   - alert: pscload-critical-rpps-delete-size
     expr: ps_metric{idType="RPPS",operation="delete"} > scalar(ps_metric{idType="RPPS",operation="reference"}/100)
     labels:
       severity: critical
     annotations:
-      Total RPPS delete: {{`{{$value}}`}}
+      summary: Total RPPS delete = {{`{{$value}}`}}
 # UPDATING RULES
 #
 #
@@ -134,25 +135,25 @@ groups:
     labels:
       severity: critical
     annotations:
-      Total ADELI updates: {{`{{$value}}`}}
+      summary: Total ADELI updates = {{`{{$value}}`}}
   - alert: pscload-critical-finess-update-size
     expr: sum(ps_metric{idType="FINESS",operation="update"}) > scalar(ps_metric{idType="FINESS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total FINESS updates: {{`{{$value}}`}}
+      summary: Total FINESS updates = {{`{{$value}}`}}
   - alert: pscload-critical-siret-update-size
     expr: sum(ps_metric{idType="SIRET",operation="update"}) > scalar(ps_metric{idType="SIRET",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total SIRET updates: {{`{{$value}}`}}
+      summary: Total SIRET updates = {{`{{$value}}`}}
   - alert: pscload-critical-rpps-update-size
     expr: sum(ps_metric{idType="RPPS",operation="update"}) > scalar(ps_metric{idType="RPPS",operation="reference"}*5/100)
     labels:
       severity: critical
     annotations:
-      Total RPPS updates: {{`{{$value}}`}}
+      summary: Total RPPS updates = {{`{{$value}}`}}
 
   - alert: pscload-continue
     expr: pscload_stage == 50
@@ -168,14 +169,14 @@ EOH
         destination = "local/file.env"
         env = true
         data = <<EOF
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
 EOF
       }
 
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         tags = [
-          "urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus"]
+          "urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-prometheus/"]
         port = "ui"
 
         check {

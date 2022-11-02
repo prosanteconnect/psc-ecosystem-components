@@ -1,6 +1,7 @@
 job "psc-alertmanager" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   vault {
     policies = ["psc-ecosystem"]
@@ -72,7 +73,7 @@ job "psc-alertmanager" {
               <table width="100%" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <a href="https://{{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname}}{{ end }}/psc-prometheus/graph"
+                    <a href="https://{{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname}}{{ end }}/psc-prometheus/graph"
                        style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
                     color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer;
                     display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda;
@@ -92,7 +93,7 @@ job "psc-alertmanager" {
 
                 <tr style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                   <td style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;" valign="top">
-                    <form action="https://{{ with secret "psc-ecosystem/pscload" }}{{ .Data.data.public_hostname}}{{ end }}/pscload/v2/process/continue" method="post">
+                    <form action="https://{{ with secret "psc-ecosystem/${nomad_namespace}/pscload" }}{{ .Data.data.public_hostname}}{{ end }}/pscload/v2/process/continue" method="post">
                       <input type="submit" name="continue" value="Continuer le processus" formmethod="post"
                              formtarget="display-frame"
                              style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px;
@@ -150,17 +151,17 @@ inhibit_rules:
 receivers:
 - name: 'email-notifications'
   email_configs:
-  - to: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_receiver}}{{ end }}
-    from: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_username}}{{ end }}
-    smarthost: {{ with secret "psc-ecosystem/admin" }}{{ .Data.data.mail_server_host}}:{{ .Data.data.mail_server_port}}{{ end }}
-    {{ with secret "psc-ecosystem/admin" }}auth_username: {{ .Data.data.mail_username}}
+  - to: {{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.mail_receiver}}{{ end }}
+    from: {{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.mail_username}}{{ end }}
+    smarthost: {{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.mail_server_host}}:{{ .Data.data.mail_server_port}}{{ end }}
+    {{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}auth_username: {{ .Data.data.mail_username}}
     auth_identity: {{ .Data.data.mail_username}}
     auth_password: {{ .Data.data.alert_manager_key }}{{ end }}
     send_resolved: true
     require_tls: true
     html : {{ `'{{ template "email.custom.html" . }}'` }}
 - name: 'pscload-webhook'
-{{ range service "webhooker" }}  webhook_configs:
+{{ range service "${nomad_namespace}-webhooker" }}  webhook_configs:
   - url: http://{{ .Address }}:{{ .Port }}/webhooker{{ end }}
 EOH
       }
@@ -169,12 +170,12 @@ EOH
         destination = "local/file.env"
         env = true
         data = <<EOF
-PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
+PUBLIC_HOSTNAME={{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .Data.data.admin_public_hostname }}{{ end }}
 EOF
       }
 
       service {
-        name = "$\u007BNOMAD_JOB_NAME\u007D"
+        name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-alertmanager strip=/psc-alertmanager"]
         port = "alertmanager_ui"
         check {

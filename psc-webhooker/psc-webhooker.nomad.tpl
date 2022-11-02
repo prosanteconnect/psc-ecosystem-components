@@ -1,6 +1,7 @@
 job "webhooker" {
   datacenters = ["${datacenter}"]
   type = "service"
+  namespace = "${nomad_namespace}"
 
   group "webhooker" {
     count = 1
@@ -21,7 +22,7 @@ job "webhooker" {
 	
     task "webhooker" {
         template {
-        change_mode = "noop"
+        change_mode = "restart"
         destination = "local/config.yaml"
         data = <<EOH
 # cache size for blocked tasks
@@ -48,7 +49,7 @@ rules:
   actions:
   - executor: http
     parameters:
-      url: http://{{env "NOMAD_IP_webhooker"}}:9999/pscload/v2/process/continue
+      url: http://{{ range service "${nomad_namespace}-pscload" }}{{ .Address }}:{{ .Port }}/pscload/v2/process/continue {{ end }}
       header Accept: "application/json"
       success_http_status: 202
       method: POST
@@ -66,8 +67,8 @@ EOH
       }
 
       service {
-        name = "webhooker"
-        tags = ["urlprefix-/webhooker"]
+        name = "$\u007BNOMAD_NAMESPACE\u007D-webhooker"
+        tags = ["urlprefix-/$\u007BNOMAD_NAMESPACE\u007D-webhooker"]
         port = "webhooker"
         check {
           name     = "webhooker port alive"
