@@ -1,6 +1,7 @@
 job "elasticsearch-cleanup" {
   datacenters = ["${datacenter}"]
   type = "batch"
+  namespace = "${nomad_namespace}"
   periodic {
     cron             = "30 00 * * * *"
     prohibit_overlap = true
@@ -18,7 +19,7 @@ job "elasticsearch-cleanup" {
         data = <<EOH
 ---
 client:
-{{range service "elasticsearch" }}
+{{range service "${nomad_namespace}-elasticsearch" }}
   hosts: {{.Address}}
   port: {{.Port}}{{end}}
   url_prefix:

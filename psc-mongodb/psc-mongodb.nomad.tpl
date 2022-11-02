@@ -23,13 +23,6 @@ job "psc-mongodb" {
       value     = "data"
     }
 
-    update {
-      max_parallel      = 1
-      min_healthy_time  = "30s"
-      progress_deadline = "5m"
-      healthy_deadline  = "2m"
-    }
-
     network {
       port "db" { to = 27017 }
     }

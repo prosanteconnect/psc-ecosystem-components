@@ -28,7 +28,7 @@ app "prosanteconnect/psc-ecosystem-components/psc-alertmanager" {
     }
     registry {
       use "docker" {
-        image = "prosanteconnect/mongodb"
+        image = "prosanteconnect/psc-alertmanager"
         tag = var.tag
         username = var.registry_username
         password = var.registry_password
