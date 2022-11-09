@@ -58,7 +58,7 @@ EOF
       service {
         name = "$\u007BNOMAD_NAMESPACE\u007D-$\u007BNOMAD_JOB_NAME\u007D"
         port = "ui"
-        tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-db/"]
+        tags = ["urlprefix-$\u007BPUBLIC_HOSTNAME\u007D/psc-db/preprod/"]
         check {
           name         = "alive"
           type         = "tcp"
