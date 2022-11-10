@@ -34,7 +34,7 @@ app "prosanteconnect/psc-filebeat" {
     registry {
       use "docker" {
         image = "${var.registry_username}/filebeat"
-        tag = 7.17.0
+        tag = "7.17.0"
         username = var.registry_username
         password = var.registry_password
         local = true
