@@ -1,0 +1,66 @@
+{{ if var "NAME" }}name: {{ var "NAME" }}{{ else }}#name:{{ end }}
+{{ if var "TAGS" }}tags:{{ range var "TAGS" | split "," }}
+  - "{{ . }}"{{ end }}{{ end }}
+http:
+  enabled: true
+  port: 5066
+
+filebeat:
+  registry.path: {{ var "NOMAD_TASK_DIR" }}/registry
+  inputs:
+    - type: log
+      {{ if var "ENABLE_JSON" }}json:
+        keys_under_root: true
+        overwrite_keys: true
+        {{ if var "ADD_JSON_ERROR_KEY" }}add_error_key: true{{ end }}
+        {{ if var "JSON_MESSAGE_KEY" }}message_key: {{ var "JSON_MESSAGE_KEY" }}{{ end }}{{ end }}
+      paths:
+        - {{ var "NOMAD_ALLOC_DIR" }}/logs/*.stdout.[0-9]
+      exclude_files:
+        - {{ var "NOMAD_TASK_NAME" }}
+      fields_under_root: true
+      fields:
+        stream: stdout
+        {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}
+        {{ if $meta_vars }}nomad:
+          meta:{{ range $meta_vars | split "," }}
+            {{ if var . }}{{ . | replace "NOMAD_META_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}
+      multiline.type: pattern
+      multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:'
+      multiline.negate: false
+      multiline.match: after
+    - type: log
+      {{ if var "ENABLE_JSON" }}json:
+        keys_under_root: true
+        overwrite_keys: true
+        {{ if var "ADD_JSON_ERROR_KEY" }}add_error_key: true{{ end }}
+        {{ if var "JSON_MESSAGE_KEY" }}message_key: {{ var "JSON_MESSAGE_KEY" }}{{ end }}{{ end }}
+      paths:
+        - {{ var "NOMAD_ALLOC_DIR" }}/logs/*.stderr.[0-9]
+      exclude_files:
+        - {{ var "NOMAD_TASK_NAME" }}
+      fields_under_root: true
+      fields:
+        stream: stderr
+        type: log
+        {{ if var "ENVIRONMENT" }}environment: {{ var "ENVIRONMENT" }}{{ else }}#environment:{{ end }}
+        {{ if $meta_vars }}nomad:
+          meta:{{ range $meta_vars | split "," }}
+            {{ if var . }}{{ . | replace "NOMAD_META_" "" | lower }}: {{ var . }}{{ end }}{{ end }}{{ end }}
+      multiline.type: pattern
+      multiline.pattern: '^[[:space:]]+(at|\.{3})[[:space:]]+\b|^Caused by:'
+      multiline.negate: false
+      multiline.match: after
+output:
+{{ if var "ES_HOST" }}  elasticsearch:
+    hosts:{{ range var "ES_HOST" | split "," }}
+      - "{{ . }}"{{ end }}
+    username: {{ var "ES_USERNAME" | default "~" }}
+    password: {{ var "ES_PASSWORD" | default "~" }}{{ end }}
+{{ if var "LOGSTASH_HOST" }}  logstash:
+    hosts:{{ range var "LOGSTASH_HOST" | split "," }}
+      - "{{ . }}"{{ end }}{{ end }}
+logging:
+{{ if var "LOGLEVEL" }}  level: {{ var "LOGLEVEL" }}{{ else }}  level: warning{{ end }}
+  to_files: false
+  to_syslog: false
