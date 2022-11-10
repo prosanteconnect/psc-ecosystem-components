@@ -42,12 +42,12 @@ app "prosanteconnect/psc-filebeat" {
     }
   }
 
-deploy {
-  use "exec" {
-    command = ["echo", "Noop"]
+  deploy {
+    use "exec" {
+      command = ["echo", "Noop"]
+    }
   }
 }
-
 
 variable "registry_username" {
   type    = string
