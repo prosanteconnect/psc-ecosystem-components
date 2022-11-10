@@ -34,7 +34,6 @@ app "prosanteconnect/psc-filebeat" {
         tag = "7.17.0"
         username = var.registry_username
         password = var.registry_password
-        local = true
       }
     }
   }
