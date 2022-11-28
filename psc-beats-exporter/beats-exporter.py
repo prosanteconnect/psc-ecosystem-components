@@ -4,6 +4,7 @@ import requests  # as aiohttp.request is leaking
 from aiohttp import web
 import logging
 import sys
+import os
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -11,10 +12,10 @@ logger = logging.getLogger(__name__)
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='beats-exporter', description='Prometheus exporter for Elastic Beats')
-    parser.add_argument('-a', '--address', action='append', type=int, default=['localhost'], help='Address to scrape (default: localhost:5066)')
+    parser.add_argument('-a', '--addresses', action='store', type=str, default=os.environ.get('ADDRESSES_TO_SCRAPE'), help='Addresses to scrape (host:port comma separated)')
     parser.add_argument('-f', '--filter', action='append', type=str, default=[], help='Filter metrics (default: disabled)')
     parser.add_argument('-l', '--log', choices=['info', 'warn', 'error'], default='info', help='Logging level (default: info)')
-    parser.add_argument('-m','--metrics-port', action='store', type=int, default=8080, help='Expose metrics on port (default: 8080)')   
+    parser.add_argument('-m','--metrics-port', action='store', type=int, default=8080, help='Expose metrics on port (default: 8080)')
     args = parser.parse_args()
     logger.setLevel(getattr(logging, args.log.upper()))
     return args
@@ -22,13 +23,13 @@ def parse_args():
 
 async def handler(request):
     text = []
-    for address in set(request.app['args'].address):
+    for address in set(request.app['args'].addresses.split(",")):
         beat = request.app['beats']['address']['beat']
         try:
             text += [f'{beat}_info{{version="{request.app["beats"]["address"]["version"]}"}} 1']
             text += get_metric(data=requests.get(f'http://{address}/stats').json(), prefix=beat)
         except Exception as e:
-            logger.error(f"Error reading {beat} at address {address}:\n{e}")
+            logger.error(f"Error reading {beat} at address {address}\n{e}")
             return web.Response(status=500, text=str(e))
 
     if request.app['args'].filter:
@@ -45,11 +46,11 @@ async def handler(request):
 
 def get_info(args):
     beats = {}
-    for address in set(args.address):
+    for address in set(args.addresses.split(",")):
         try:
             beats["address"] = requests.get(f'http://{address}').json()
         except Exception as e:
-            logger.error(f"Error connecting Beat at address {address}:\n{e}")
+            logger.error(f"Error connecting Beat at address {address}\n{e}")
             sys.exit(1)
     return beats
 
