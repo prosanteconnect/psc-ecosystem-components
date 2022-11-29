@@ -24,9 +24,11 @@ def parse_args():
 async def handler(request):
     text = []
     for address in set(request.app['args'].addresses.split(",")):
-        beat = request.app['beats']['address']['beat']
+        beat = request.app['beats'][address.replace(":","->")]['name']
+        beat += '_'
+        beat += request.app['beats'][address.replace(":","->")]['beat']
         try:
-            text += [f'{beat}_info{{version="{request.app["beats"]["address"]["version"]}"}} 1']
+            text += [f'{beat}_info{{version="{request.app["beats"][address.replace(":","->")]["version"]}"}} 1']
             text += get_metric(data=requests.get(f'http://{address}/stats').json(), prefix=beat)
         except Exception as e:
             logger.error(f"Error reading {beat} at address {address}\n{e}")
@@ -48,7 +50,7 @@ def get_info(args):
     beats = {}
     for address in set(args.addresses.split(",")):
         try:
-            beats["address"] = requests.get(f'http://{address}').json()
+            beats[address.replace(":","->")] = requests.get(f'http://{address}').json()
         except Exception as e:
             logger.error(f"Error connecting Beat at address {address}\n{e}")
             sys.exit(1)
