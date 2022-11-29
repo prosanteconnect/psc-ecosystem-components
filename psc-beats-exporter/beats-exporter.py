@@ -25,8 +25,6 @@ async def handler(request):
     text = []
     for address in set(request.app['args'].addresses.split(",")):
         beat = request.app['beats'][address.replace(":","->")]['name']
-        beat += '_'
-        beat += request.app['beats'][address.replace(":","->")]['beat']
         try:
             text += [f'{beat}_info{{version="{request.app["beats"][address.replace(":","->")]["version"]}"}} 1']
             text += get_metric(data=requests.get(f'http://{address}/stats').json(), prefix=beat)
