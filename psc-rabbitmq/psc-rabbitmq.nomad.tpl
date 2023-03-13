@@ -68,6 +68,15 @@ job "psc-rabbitmq" {
             propagation = "rshared"
           }
         }
+        mount {
+          type = "bind"
+          target = "/etc/rabbitmq/enabled_plugins.tpl"
+          source = "local/enable_plugins"
+          readonly = false
+          bind_options {
+            propagation = "rshared"
+          }
+        }
         #mount {
         #  type = "bind"
         #  target = "/etc/rabbitmq/definitions.json"
@@ -87,6 +96,13 @@ PUBLIC_HOSTNAME="{{ with secret "psc-ecosystem/${nomad_namespace}/admin" }}{{ .D
 EOH
         destination = "secrets/file.env"
         env = true
+      }
+      template {
+        change_mode = "restart"
+        destination = "local/enable_plugins.tpl"
+        data = <<EOF
+[rabbitmq_management,rabbitmq_prometheus,rabbitmq_shovel,rabbitmq_shovel_management].
+EOF
       }
       template {
         change_mode = "restart"
