@@ -70,8 +70,8 @@ job "psc-rabbitmq" {
         }
         mount {
           type = "bind"
-          target = "/etc/rabbitmq/enabled_plugins.tpl"
-          source = "local/enable_plugins"
+          target = "/etc/rabbitmq/enabled_plugins"
+          source = "local/enable_plugins.tpl"
           readonly = false
           bind_options {
             propagation = "rshared"
